@@ -17,7 +17,7 @@ def complete_notes(draftnotes, fullnotes, cleannotes):
                     # fullnotes文件包含完整笔记，若是"uft-8-sig"编码文本文件，则首字符“\ufeff”会导致匹配失败
                     with open(fullnotes, 'r', encoding='utf-8-sig') as f3:
                         for complete_line in f3:
-                            # 去除空格差异，比较前30个字符
+                            # 去除空格差异，比较前100个字符
                             if line.replace(' ', '')[:100] == complete_line.replace(' ', '')[:100]:
                                 # print(f'{line}替换为\n{complete_line}\n')
                                 count += 1
@@ -82,9 +82,9 @@ def add_markdown_tag(cleannotes):
                         count += 1
 
                     # 短内容作为小标题加粗显示
-                    elif len(line) < 15:
-                        line = "**" + line.strip() + "**\n"
-                        count += 1
+                    # elif len(line) < 15:
+                    #     line = "**" + line.strip() + "**\n"
+                    #     count += 1
                     # 文末标记
                     elif line.startswith('当当云阅读笔记'):
                         line = '\n---\n' + line
@@ -220,14 +220,6 @@ def remove_linenum(cleannotes):
 
 
 if __name__ == "__main__":
-    # import re
-    # import readnotes2markdown as r2m
-    # from imp import reload
-    # reload(r2m)
-
-    # cleannotes = 'Python数据可视化之matplotlib实践.md'
-    # r2m.general_cleaning(cleannotes)
-
     draftnotes = 'draftnotes.txt'   # 原始笔记内容粘贴至此文件
     fullnotes = 'fullnotes.txt'     # 完整的笔记段落内容粘贴至此文件
 
@@ -243,8 +235,8 @@ if __name__ == "__main__":
     # 先使用add_code_mark再使用split_code_line、remove_linenum
     # 最后再使用add_markdown_tag添加markdown标记
 
-    fn_list = [remove_timemark, add_markdown_tag]   # 针对普通笔记清洗策略
-    # fn_list = [remove_timemark, add_code_mark, split_code_line, add_markdown_tag]   # 针对编程笔记清洗策略
+    # fn_list = [remove_timemark, add_markdown_tag]   # 针对普通笔记清洗策略
+    fn_list = [remove_timemark, add_code_mark, split_code_line, add_markdown_tag]   # 针对编程笔记清洗策略
     # fn_list = [remove_timemark, add_code_mark, split_code_line, remove_linenum, add_markdown_tag]   # 针对编程笔记清洗策略(清除代码行号)
     for fn in fn_list:
         tmpnotes = create_tmpnotes(cleannotes)
