@@ -25,7 +25,7 @@
 
 | 导出的原始笔记（印象笔记）                                   | 自动整理后的笔记（注意最后一条笔记被补全了，并整理了代码格式） |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![image-20201017144618192](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201017144618192.png) | ![image-20201017144643974](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201017144643974.png) |
+| ![image-20201017144618192](.\image\image-20201017144618192.png) | ![image-20201017144643974](.\image\image-20201017144643974.png) |
 
 
 
@@ -43,7 +43,7 @@
 
   | Markdown笔记                                                 | Workflowy笔记                                                |
   | ------------------------------------------------------------ | ------------------------------------------------------------ |
-  | ![image-20201017145348778](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201017145348778.png) | ![image-20201017145443566](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201017145443566.png) |
+  | ![image-20201017145348778](.\image\image-20201017145348778.png) | ![image-20201017145443566](.\image\image-20201017145443566.png) |
 
   
 
@@ -59,7 +59,7 @@
 
   | Markdown笔记                                                 | Jupyter Notebook笔记                                         |
   | ------------------------------------------------------------ | ------------------------------------------------------------ |
-  | ![image-20201017150012700](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201017150012700.png) | ![image-20201017150036828](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201017150036828.png) |
+  | ![image-20201017150012700](.\image\image-20201017150012700.png) | ![image-20201017150036828](.\image\image-20201017150036828.png) |
 
   
 
