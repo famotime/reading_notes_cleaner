@@ -3,7 +3,7 @@ import pathlib
 import re
 
 
-path = r'C:\QMDownload\Python Programming\Python_Work\clean_notes'
+path = r'C:\QMDownload\Python Programming\Python_Work\reading_notes_cleaner'
 
 path = pathlib.Path(path)
 folder = path.parts[-1]
