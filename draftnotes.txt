@@ -1,20 +1,869 @@
-﻿利用Python进行数据分析(原书第2版)
-（美）韦斯·麦金尼（Wes McKinney）
-3.2 函数
-3.2.1 命名空间、作用域和本地函数
-2020-02-17 09:41
-在Python中另一种更贴切地描述变量作用域的名称是命名空间。在函数内部，任意变量都是默认分配到本地命名空间的。本地命名空间是在函数被调用时生成的，并立即由函数的参数填充。当函数执行结束后，本地命名空间就会被销毁（除了一些本章范围外的特殊情况）。
-2020-02-17 09:42
-通常全局变量用来存储系统中的某些状态。如果你发现你大量使用了全局变量，可能表明你需要面向对象编程（使用类）。
-3.2.3 函数是对象
-2020-02-17 12:35
-In [171]: states = [' Alabama ', 'Georgia!', 'Georgia', 'georgia', 'FlOrIda', .....: 'south carolina##', 'West virginia?']
-2020-02-17 12:36
-需要做：去除空格，移除标点符号，调整适当的大小写。一种方式是使用内建的字符串方法，结合标准库中的正则表达式模块re：
-2020-02-17 12:34
-另一种会让你觉得有用的实现就是将特定的列表操作应用到某个字符串的集合上： 
-def remove_punctuation(value): return re.sub('[!#?]', '', value) clean_ops = [str.strip, remove_punctuation, str.title] def clean_strings(strings, ops): result = [] for va...
-2020-02-17 12:37
-像这种更为函数化的模式可以使你在更高层次上方便地修改字符串变换方法。clean_strings函数现在也具有更强的复用性和通用性。
-2020-02-17 12:38
-你可以将函数作为一个参数传给其他的函数，比如内建的map函数，可以将一个函数应用到一个序列上： In [176]: for x in map(remove_punctuation, states): .....: print(x) Alabama Georgia Georgia
+﻿Selenium自动化测试 基于 Python 语言
+（印度）冈迪察.U（Unmesh Gundecha ）
+前言
+2020-10-25 10:05
+Selenium包括一系列的工具组件。Selenium IDE：是嵌入到Firefox浏览器的插件，用于在Firefox上录制与回放Selenium 脚本。图形化的界面可以形象地记录下用户在浏览器中的操作，非常方便使用者了解与学习。目前它只能在Firefox下使用，好在它能将录制好的脚本转换成各种Selenium WebDriver支持的程序语言，进而扩展到更广泛的浏览器类型。
+2020-10-25 10:05
+Selenium WebDriver：其实质上就是可以支持多种编程语言，并且有用于操作浏览器的一套API。支持多类型浏览器、跨操作系统平台（包括Linux、Windows以及Mac OS X），是真正意义上的跨浏览器测试工具。WebDriver为诸如Java、C#、Python、Ruby、PHP、JavaScript等语言分别提供了完备的、用于实现Web自动化测试的第三方库。
+2020-10-25 10:05
+Selenium Standalone Server：包括被大家广泛了解的Selenium Grid、远程控制、分布式部署等，均可实现Selenium 脚本的高效执行与拓展。我们利用Grid使得自动化测试可以并行运行，甚至是在跨平台、异构的环境中运行，包括目前主流的移动端环境，如Android、iOS。
+第1章 基于Python的Selenium WebDriver入门
+2020-10-25 10:08
+1.1　环境准备
+2020-10-25 10:07
+使用pip，可以非常简单地通过下面的命令来安装和更新Selenium安装包。pip install -U selenium
+2020-10-25 10:46
+Selenium WebDriver Python client library 文档可以从以下网址查看。http://selenium.googlecode.com/git/docs/api/py/api.html
+2020-10-25 10:46
+官方文档：http://docs.seleniumhq.org/docs/。这里有关于Selenium所有组件的说明文档以及基于一些所支持的语言编写的实例。Selenium Wiki地址：https://code.google.com/p/selenium/w/list。这里列举了将在后面的章节能够看到的有用的主题。
+2020-10-25 13:38
+1.2　第一个Selenium Python脚本
+2020-10-25 10:48
+我们会使用一个简单的Web应用程序（本书上大多数例子都是基于这个应用程序）。这个简单的Web应用程序是基于一个著名电子商务框架Magento构建的。你可以在以下网址里找到这个应用程序:http://demo.magentocommerce.com/。
+2020-10-25 10:47
+示例代码也被托管在github中，访问地址为：https://github.com/upgundecha/learnsewithpython。
+2020-10-25 10:49
+在这个简单的脚本中，我们会通过接下来的步骤去访问这个应用程序，搜索产品并在搜索结果页面中列出产品的名称。
+2020-10-25 10:54
+from selenium import webdriver # create a new Firefox session driver = webdriver.Firefox() driver.implicitly_wait(30) driver.maximize_window() # navigate to the application home page driver.get("http://demo.magentoco...
+2020-10-25 10:54
+print "Found " + str(len(products)) + " products:" # iterate through each anchor element and print the text that is # name of the product for product in products: 　　print product.text # close the browser window driver...
+2020-10-25 13:31
+在这个例子中，我们使用的是Firefox浏览器。我们可以通过下方命令来创建一个Firefox浏览器驱动实例。driver = webdriver.Firefox()在运行期间，这会加载一个新的Firefox浏览器窗口。
+2020-10-25 13:31
+也可以在这个驱动上设置一些参数，如：driver.implicityly_wait(30) driver.maximize_window()我们使用30秒隐式等待时间来定义Selenium执行步骤的超时时间，并且调用Selenium API来最大化浏览器窗口。
+2020-10-25 13:31
+我们使用示例程序的URL作为参数，通过调用driver.get()方法访问该应用程序。在get()方法被调用后，WebDriver会等待，一直到页面加载完成才继续控制脚本。
+2020-10-25 13:32
+（1）在这个例子中，搜索输入框有一个值为q的name属性，我们使用这个属性来定位，代码如下。search_field = driver.find_element_by_name("q")
+2020-10-25 13:33
+（2）一旦找到这个搜索输入框，我们可以使用clear()方法来清理之前的值（如果搜索输入框已经有值的话），并且通过send_keys()方法输入新的特定的值。接着我们通过调用submit()方法提交搜索请求。search_field.clear() search_field.send_keys("phones") search_field.submit()
+2020-10-25 13:37
+可以使用find_elements_by_xpath方法获取路径是以<a>标签结尾的所有产品名称。它将会返回多于1个的元素列表。products = 　driver.find_elements_by_xpath("//h2[@class= 　'product-name']/a")
+2020-10-25 13:37
+（4）接着，我们打印在页面中展示的产品个数（即符合路径以<a>标签结尾的元素个数）和产品的名称（即<a>标签的text属性值）。print "Found " + str(len(products)) + " products:" for product in products: 　　print product.text（5）在脚本的最后，我们使用driver.quit()方法来关闭Firefox浏览器。driver.quit()
+2020-10-25 13:39
+1.3　支持跨浏览器
+2020-10-25 13:39
+1.3.2　设置Google Chrome浏览器
+2020-10-25 13:39
+我们需要下载ChromeDriver服务。ChromeDriver服务是一个由Chromium team开发维护的独立的服务，它支持Windows操作系统、Linux操作系统和Mac操作系统。使用以下步骤来设置ChromeDriver服务。
+2020-10-25 13:40
+（1）在http://chromedriver.storage.googleapis.com/index.html下载ChromeDriver服务。（2）下载完ChromeDriver服务后，解压文件，并把文件复制到存储脚本的目录中。（3）修改脚本使其支持Chrome浏览器。我们通过以下方式创建Chrome实例，用此来替换Firefox浏览器实例。
+2020-10-25 13:40
+import os from selenium import webdriver # get the path of chromedriver dir = os.path.dirname(__file__) chrome_driver_path = dir + "\chromedriver.exe" # remove the .exe extension on linux or mac platform # create a new C...
+2020-10-25 13:40
+elements which have product names displayed # currently on result page using find_elements_by_xpath method products = driver.find_elements_by_xpath("//h2[@class='product-name']/a") # get the number of anchor elements fou...
+2020-10-25 13:40
+在这个脚本中，在创建Chrome浏览器实例时，我们传递了ChromeDriver的路径。（4）运行脚本后，Selenium会加载ChromeDriver服务，用它来启动浏览器和执行脚本。
+第2章 使用unittest编写单元测试
+2020-10-25 13:42
+在本章，我们将学习如何使用unittest来创建基于Python的Selenium WebDriver测试脚本。本章包含以下主题：什么是unittest？使用unittest来写Selenium WebDriver测试；用TestCase类来实现一个测试；学习unittest提供的不同类型的assert方法；为一组测试创建TestSuite；使用unittest扩展来生成HTML格式的测试报告。
+2020-10-25 13:56
+2.1　unittest单元测试框架
+2020-10-25 13:56
+unittest也是Python中用来测试各种标准类库模块的，甚至包括unittest自己。可以在以下网址查看unittest的文档：http://docs.python.org/2/library/unittest.html。
+2020-10-25 13:56
+unittest使我们具备创建测试用例、测试套件、测试夹具的能力。可以通过下面的图来了解所有的组件。Test Fixture（测试夹具）：通过使用测试夹具，可以定义在单个或多个测试执行之前的准备工作和测试执行之后的清理工作。Test Case（测试用例）：一个测试用例是在unittest中执行测试的最小单元。它通过unittest提供的assert方法来验证一组特定的操作和输入以后得到的具体响应。unittest提供了一个名称为Test...
+2020-10-25 13:56
+Test Suite（测试套件）：一个测试套件是多个测试或测试用例的集合，是针对被测程序的对应的功能和模块创建的一组测试，一个测试套件内的测试用例将一起执行。
+2020-10-25 13:56
+Test Runner（测试执行器）：测试执行器负责测试执行调度并且生成测试结果给用户。测试执行器可以使用图形界面、文本界面或者特定的返回值来展示测试执行结果。Test Report（测试报告）：测试报告用来展示所有执行用例的成功或者失败状态的汇总，执行失败的测试步骤的预期结果与实际结果，还有整体运行状况和运行时间的汇总。
+2020-10-25 13:56
+通过与unittest类似的xUnite测试框架创建的测试被拆分为3部分，即3A’s，具体如下。Arrange：是用来初始化测试的前置条件，包含初始化被测试的对象、相关配置和依赖。Act：用来执行功能操作。Assert：用来校验实际结果与预期结果是否一致。
+2020-10-25 13:57
+2.1.1　TestCase类
+2020-10-25 13:57
+我们可以通过继承TestCase类并且在测试类中为每一个测试添加测试方法来创建单个测试或者一组测试。为了创建测试，我们需要使用TestCase类中的assert或者使用其中的一种assert方法。每个测试最重要的任务是调用assertEqual()来校验预期结果，调用assertTrue() 来验证条件，或者调用assertRaises() 来验证预期的异常。
+2020-10-25 13:57
+除了添加测试，我们可以添加测试夹具——setUp()方法和tearDown()方法，创建或处置测试用例所需要的任何对象和条件。
+2020-10-25 13:58
+让我们开始使用unittest，首先通过继承TestCase类然后添加一个测试方法，来为第1章（基于Python的Selenium WebDriver入门）中的例子脚本写一个简单的测试。我们需要先引入unittest模块，然后定义一个继承于TestCase 类的子类，具体如下。import unittest from selenium import webdriver class SearchTest (unittest.TestCas...
+2020-10-25 13:58
+2.1.1.1　setUp()方法
+2020-10-25 13:58
+一个测试用例是从setUp()方法开始执行的，我们可以用这个方法在每个测试开始前去执行一些初始化的任务。可以是这样的初始化准备：比如创建浏览器实例，访问URL，加载测试数据和打开日志文件等。此方法没有参数，而且不返回任何值。当定义了一个setUp()方法，测试执行器在每次执行测试方法之前优先执行该方法。在下面的例子里，我们将用setUp()方法来创建Firefox的实例，设置properties，而且在测试开始执行之前访问到被测程序的主...
+2020-10-25 13:58
+import unittest from selenium import webdriver class SearchTests(unittest.TestCase): def setUp(self): # create a new Firefox session self.driver = webdriver.Firefox() self.driver.implicitly_wa...
+2020-10-25 13:58
+2.1.1.2　编写测试
+2020-10-25 13:59
+在这个例子里，我们将搜索一个产品，然后检查是否返回一些相应的结果。与setUp()方法相似，test方法也是在TestCase类中实现。重要的一点是我们需要给测试方法命名为test开头。这种命名约定通知test runner哪个方法代表测试方法。
+2020-10-25 13:59
+对于test runner能找到的每个测试方法，都会在执行测试方法之前先执行setUp()方法。这样做有助于确保每个测试方法都能够依赖相同的环境，无论类中有多少测试方法。我们将使用简单的assertEqual()方法来验证用程序搜索该术语返回的结果是否和预期结果相匹配。
+2020-10-25 13:59
+添加一个新的测试方法test_search_by_category()，通过分类来搜索产品，然后校验返回的产品的数量是否正确，具体如下。import unittest from selenium import webdriver class SearchTests(unittest.TestCase): def setUp(self): # create a new Firefox session ...
+2020-10-25 14:00
+def test_search_by_category(self): # get the search textbox self.search_field = self.driver.find_element_by_name("q") self.search_field.clear() # enter search keyword and submit s...
+2020-10-25 14:00
+2.1.1.3　代码清理
+2020-10-25 14:00
+类似于setUp()方法在每个测试方法之前被调用，TestCase类也会在测试执行完成之后调用tearDown()方法来清理所有的初始化值。一旦测试被执行，在setUp()方法中定义的值将不再需要，所以最好的做法是在测试执行完成的时候清理掉由setUp()方法初始化的数值。在我们的例子里，在测试执行完成后，就不再需要Firefox的实例。我们将在tearDown()方法中关闭Firefox实例，如下代码所示。
+2020-10-25 14:01
+import unittest from selenium import webdriver class SearchTests(unittest.TestCase): def setUp(self): # create a new Firefox session self.driver = webdriver.Firefox() self.driver.implicitly_wa...
+2020-10-25 14:01
+currently on result page using # find_elements_by_xpath method products = self.driver.find_elements_by_xpath ("//h2[@class='product-name']/a") self.assertEqual(2, len(products)) def ...
+2020-10-25 14:01
+2.1.1.4　运行测试
+2020-10-25 14:02
+我们将传递verbosity参数以便使详细的测试总量展示在控制台。if __name__ == '__main__': unittest.main(verbosity=2)
+2020-10-25 14:02
+上图展示了具体是哪个测试方法执行失败，通过打印信息可以追踪具体导致失败的代码。另外，失败自身也会以AssertionError形式显示，例子中的预期结果和实际结果并不匹配。
+2020-10-25 14:02
+2.1.1.5　添加其他测试
+2020-10-25 14:02
+我们可以用一组测试来构建一个测试类，这样有助于为一个特定功能创建一组更合乎逻辑的测试。下面为测试类添加其他的测试。规则很简单，新的测试方法命名也要以test开头，如下列代码。
+2020-10-25 14:02
+def test_search_by_name(self): # get the search textbox self.search_field = self.driver.find_element_by_name("q") self.search_field.clear() # enter search keyword and submit self.s...
+2020-10-25 14:03
+2.1.2　类级别的setUp()方法和tearDown()方法
+2020-10-25 14:03
+能否让各个测试方法共用一个Firefox实例，而不要每次都创建一个新的实例呢？这可以通过使用setUpClass()方法和tearDownClass()方法及@classmethod标识来实现。这两个方法使我们可以在类级别来初始化数据，替代了方法级别的初始化，这样各个测试方法就可以共享这些初始化数据。在下面的例子中，代码修改为调用setUpClass()方法和tearDownClass()方法并且加上@classmethod标识。
+2020-10-25 14:03
+import unittest from selenium import webdriver class SearchTests(unittest.TestCase): @classmethod def setUpClass(cls): # create a new Firefox session cls.driver = webdriver.Firefox() cls.d...
+2020-10-25 14:03
+# displayed currently on result page using # find_elements_by_xpath method products = self.driver.find_elements_by_xpath ("//h2[@class='product-name']/a") self.assertEqual(2, len(product...
+2020-10-25 14:03
+self.assertEqual(1, len(products)) @classmethod def tearDownClass(cls): # close the browser window cls.driver.quit() if __name__ == '__main__': unittest.main()
+2020-10-25 14:04
+2.1.3　断言
+2020-10-25 14:05
+unittest提供了所有的标准xUnit 断言方法。下表列出了一些在本书后面将要用到的重要方法。方　　法校 验 条 件应 用 实 例assertEqual(a, b [,msg])a == b这些方法校验a和b是否相等，msg对象是用来说明失败原因的消息。 这对于验证元素的值和属性等是非常有用的。例如： assertEqual(element.text, "10")assertNotEqual(a, b[,msg])a != b
+2020-10-25 14:06
+assertTrue(x[,msg]))bool(x) is True这些方法校验给出的表达式是True还是False。 例如，校验一个元素是否出现在页面，我们可以用下面的方法： assertTrue(element.is_displayed())assertFalse(x[,msg]))bool(x) is FalseassertIsNot(a, b[,msg]))a is not b
+2020-10-25 14:06
+assertRaises(exc, fun, *args, **kwds)fun(*args, **kwds) raises exc这些方法校验特定的异常是否被具体的测试步骤抛出，用到该方法的一种可能情况是： NoSuchElementFoundexceptionassertRaisesRegexp(exc, r, fun, *args, **kwds)fun(*args,**kwds) raises exc and the messa...
+2020-10-25 14:06
+assertNotAlmostEqual(a, b)round(a-b, 7) != 0assertGreater(a, b)a > b这些方法类似于assertEqual()方法，是为逻辑判定条件设计的assertGreaterEqual(a, b)a >= bassertLess(a, b)a < bassertLessEqual(a, b)a <= bassertRegexpMatches(s, r)r.search(s)这些方法...
+2020-10-25 14:06
+assertMultiLineEqual(a, b)strings此方法是assertEqual()的一种特殊形式，为多行字符串设计。等值校验和其他单行字符串校验一样，但是默认失败信息经过优化以后可以展示具体值之间的差别assertListEqual(a, b)lists此方法校验两个list是否相等，对于下拉列表选项字段的校验是非常有用的fail()此方法是无条件的失败。在别的assert方法不好用的时候，也可用此方法来创建定制的条件...
+2020-10-25 14:07
+2.1.4　测试套件
+2020-10-25 14:07
+应用unittest的TestSuites特性，可以将不同的测试组成一个逻辑组，然后设置统一的测试套件，并通过一个命令来执行测试。这都是通过TestSuites、TestLoader和TestRunner类来实现的。
+2020-10-25 14:07
+在了解TestSuites的细节之前，我们为例子程序添加一个新的测试，用于校验主页。我们将把新加的测试和之前的测试放到一个测试组件中，详见下面代码。
+2020-10-25 14:07
+import unittest from selenium import webdriver from selenium.common.exceptions import NoSuchElementException from selenium.webdriver.common.by import By from __builtin__ import classmethod class HomePageTest(unittest.Tes...
+2020-10-25 14:07
+# check search field exists on Home page self.assertTrue(self.is_element_present(By.NAME,"q")) def test_language_option(self): # check language options dropdown on Home page self.assertTrue(s...
+2020-10-25 14:07
+("div.minicart-wrapper a.close") close_button.click() @classmethod def tearDown(cls): # close the browser window cls.driver.quit() def is_element_present(self, how, what): ""...
+2020-10-25 14:07
+我们将用TestSuite类来定义和执行测试套件。我们可以把多个测试加入到一个测试套件中去。除了TestSuite类，我们还可以用TestLoader和TextTestRunner来创建和运行测试套件，举例如下。
+2020-10-25 14:08
+import unittest from searchtests import SearchTests from homepagetests import HomePageTest # get all tests from SearchProductTest and HomePageTest class search_tests = unittest.TestLoader().loadTestsFromTestCase (SearchT...
+2020-10-25 14:08
+tests)使用TestLoader类，我们将得到指定测试文件中的所有测试方法且用于创建测试套件。TestRunner类将通过调用测试套件来执行文件中所有的测试。
+2020-10-25 14:08
+2.2　生成HTML格式的测试报告
+2020-10-25 14:08
+。unittest没有相应的内置模块可以生成格式友好的报告，我们可以应用Wai Yip Tung编写的unittest的扩展HTMLTestRunner来实现。从下面的网址可以获取更多关于HTMLTestRunner的信息并可以下载说明文档：https://pypi.python.org/pypi/HTMLTestRunner。
+2020-10-25 14:08
+我们将在测试中使用HTMLTestRunner来生成漂亮的测试报告。通过修改在本章前面涉及的测试套件文件来添加HTMLTestRunner支持。我们需要创建一个包含实际测试报告的输出文件，需要配置HTMLTestRunner选项和运行测试，具体如下。
+2020-10-25 14:09
+import unittest import HTMLTestRunner import os from searchtests import SearchTests from homepagetests import HomePageTest # get the directory path to output report file dir = os.getcwd() # get all tests from SearchProdu...
+2020-10-25 14:09
+# open the report file outfile = open(dir + "\SmokeTestReport.html", "w") # configure HTMLTestRunner options runner = HTMLTestRunner.HTMLTestRunner( stream=outfile, title='Test Report', ...
+第3章 元素定位
+2020-10-25 14:10
+3.1　借助浏览器开发者模式定位
+2020-10-25 14:10
+3.1.2　用谷歌Chrome浏览器检查页面元素
+2020-10-25 14:11
+当我们需要使用XPath或CSS选择器时，在开发者工具下的Elements窗口中，按Ctrl+F键，将会显示搜索框。一旦输入XPath或CSS表达式，Firebug就会高亮显示与之匹配的元素，如下图所示。
+2020-10-25 14:11
+3.2　元素定位
+2020-10-25 14:11
+Selenium提供多种find_element_by 方法用于定位页面元素。这些方法根据一定的标准去查找元素，如果元素被正常定位，那么WebElement实例将返回。反之，将抛出NoSuchElementException的异常。同时，Selenium还提供多种find_elements_by 方法去定位多个元素，这类方法根据所匹配的值，搜索并返回一个list数组（元素）。
+2020-10-25 15:57
+Selenium提供8种find_element_by 方法用于定位元素。接下来的部分，我们将逐一介绍方法细节，如下表所示。方　　法描　　述参　　数示　　例find_element_by_id(id)通过元素的ID属性值来定位元素id：元素的IDdriver.find_element_by_id('search')find_element_by_name(name)通过元素的name属性值来定位元素name：元素的namedriver....
+2020-10-25 15:58
+find_element_by_tag_name(name)通过元素的tag name来定位元素name：tag namedriver.find_element_by_tag_name('input')find_element_by_xpath(xpath)通过XPath来定位元素XPath：元素的XPathdriver.find_element_by_xpath('//form[0]/div[0]/input[0]')find_ele...
+2020-10-25 15:58
+find_element_by_partial_link_text(link_text)通过元素标签对之间的部分文本信息来定位元素link_text：部分文本信息driver.find_element_by_partial_link_text('Log')find_elements_by 方法能按照一定的标准返回一组元素，具体见下表。方　　法描　　述参　　数示　　例
+2020-10-25 19:36
+find_elements_by_id(id_)通过元素的ID属性值来定位一组元素id_：元素的IDdriver.find_elements_by_id('product')find_elements_by_name(name)通过元素的name属性值来定位一组元素name：元素的namedriver.find_elements_by_name('products')
+2020-10-25 19:36
+find_elements_by_class_name(name)通过元素的class名来定位一组元素name：元素的类名driver.find_elements_by_class_name('foo')find_elements_by_tag_name(name)通过元素的tag name来定位一组元素name：tag namedriver.find_elements_by_tag_name('a')
+2020-10-25 19:36
+find_elements_by_xpath(xpath)通过XPath来定位一组元素XPath：元素的XPathdriver.find_elements_by_xpath("//div[contains(@class,'lists')]")find_elements_by_css_selector(css_selector)通过CSS选择器来定位一组元素css_selector：元素的CSS选择器driver.find_element...
+2020-10-25 19:36
+find_elements_by_link_text(text)通过元素标签对之间的文本信息来定位一组元素text：文本信息driver.find_elements_by_link_text('Log In')find_elements_by_partial_link_text(link_text)通过元素标签对之间的部分文本信息来定位一组元素link_text：部分文本信息driver.find_elements_by_partial...
+2020-10-25 19:37
+3.2.1　ID定位
+2020-10-25 19:37
+find_element_by_id()方法返回的是与ID属性值匹配的第一元素，如果没有元素与之匹配，则抛出NoSuchElementException异常。
+2020-10-25 19:39
+通过查看HTML，我们可以看到搜索框的ID值被定义为search。<input id="search" type="text" name="q" value="" 　class="input-text" maxlength="128" autocomplete="off">
+2020-10-25 19:38
+我们使用find_element_by_id() 方法，id值为search来定位搜索框，同时检查maxlength的属性值。def test_search_text_field_max_length(self): 　# get the search textbox 　search_field = self.driver.find_element_by_id("search") 　# check maxlength attribute ...
+2020-10-25 19:39
+3.2.2　name定位
+2020-10-25 19:39
+回到之前的例子，我们可以用匹配name属性值的方式来替换ID值的匹配，同样可以定位到搜索框。# get the search textbox self.search_field = self.driver.find_element_by_name("q")
+2020-10-25 19:39
+3.2.3　class定位
+2020-10-25 19:40
+通过对元素ID、name和class属性来查找元素是最为普遍和快捷的方法。
+2020-10-25 19:41
+搜索按钮（放大镜图标）在HTML中是用<button>标签（元素）以及对应的class属性与属性值定义的，具体如下。<button type="submit" title="Search" 　class="button"><span><span>Search</span></span></button>下面我们用class属性值来定位搜索按钮，代码如下。def test_search_button_enabled(self): 　　# ...
+2020-10-25 19:41
+3.2.4　tag定位
+2020-10-25 19:42
+这个方法在某些特定的场景下格外有用，例如，我们可以通过<tr> 的tag name一次定位页面的table中所有的行数据（元素）。
+2020-10-25 19:42
+这几张banner图采用无序列表标签<ul>内嵌图像标签<img>来实现。<ul class="promos"> 　　<li> 　　　 <a href="http://demo.magentocommerce.com/home-decor.html"> 　　　　　 <img src="/media/wysiwyg/homepage-three-column-promo- 　　　　　　 01B.png" alt="Physical & ...
+2020-10-25 19:42
+</li> 　　<li> 　　　 <a href="http://demo.magentocommerce.com/vip.html"> 　　　　　 <img src="/media/wysiwyg/homepage-three-column-promo- 　　　　　　 02.png" alt="Shop Private Sales - Members Only"> 　　　 </a> 　　</li> 　　<li> 　　　 <a href...
+2020-10-25 19:42
+　 promo-03.png" alt="Travel Gear for Every Occasion"> 　　　 </a> 　　</li> </ul>
+2020-10-25 19:43
+我们使用find_elements_by_tag_name()方法来定位所有的banner图片。首先我们用find_element_by_class_name()方法定位这一组banner图，然后用find_elements_by_tag_name()方法去匹配<img>的tag name，最后把结果返回给banners对象。
+2020-10-25 19:43
+def test_count_of_promo_banners_images(self): 　　# get promo banner list 　　banner_list = self.driver.find_element_by_class_name("promos") 　　# get images from the banner_list 　　banners = banner_list.find_elements_by_tag_na...
+2020-10-25 19:44
+3.2.5　XPath定位
+2020-10-25 19:44
+XPath是一种在XML文档中搜索和定位元素的查询语言。几乎所有的浏览器都支持XPath。同样，Selenium也可以通过XPath的方式在Web页面上定位元素。
+2020-10-25 19:45
+当我们发现通过ID、name或class属性值都无法定位元素时，不妨尝试用XPath的方式。我们可以灵活地运用绝对或相对路径定位，也可以通过除ID、name以外的其他属性来定位，甚至还可以通过属性值的一部分（如starts-with()、contains()和ends-with()）来帮助我们定位。
+2020-10-25 19:45
+上图是名为“Shop Private Sales”的banner图，在<img> 的tag下，其中代码并不包含ID、name或class属性等信息，且这个页面还包含很多其他的<img>，所以我们不能通过传统的方法如findby tag_name()简单地定位了。<ul class="promos"> 　　... 　　<li> 　　　 <a href="http://demo.magentocommerce.com/vip.html"> ...
+2020-10-25 19:55
+我们尝试使用find_element_by_xpath()方法，用<img>标签下的 alt 属性值来定位我们要找的元素。代码如下。def test_vip_promo(self): 　　# get vip promo image 　　vip_promo = self.driver.\ 　　　find_element_by_xpath("//img[@alt='Shop Private Sales - Members Only']")...
+2020-10-25 19:55
+3.2.6　CSS选择器定位
+2020-10-25 19:55
+CSS使用选择器为页面元素绑定属性（如ID、class、type、attribute、value等）。类似XPath，Selenium也可以利用CSS选择器的特性，用于帮助我们来定位元素。
+2020-10-25 19:55
+回到首页的例子，可以看到购物车按钮，单击这个按钮，将进入购物车页面。如果此时没有添加任何商品，那么系统会提示“你还没有添加商品到购物车”，如下图所示。 HTML代码如下。<div class="minicart-wrapper"> <p class="block-subtitle"> 　　Recently added item(s) 　　<a class="close skip-link-close" href="#" title="C...
+2020-10-25 19:56
+我们设计测试程序来校验这个提示信息。首先我们将使用CSS选择器来定位购物车按钮，然后单击它，紧接着定位即将弹出的信息。
+2020-10-25 19:56
+def test_shopping_cart_status(self): 　　# check content of My Shopping Cart block on Home page 　　# get the Shopping cart icon and click to open the 　　# Shopping Cart section 　　shopping_cart_icon = self.driver.\
+2020-10-25 19:56
+　　find_element_by_css_selector("div.header-minicart span.icon") 　　shopping_cart_icon.click() 　　# get the shopping cart status 　　shopping_cart_status = self.driver.\ 　　　　find_element_by_css_selector("p.empty").text 　　...
+2020-10-25 19:57
+从上面的测试脚本可以看出，我们使用了元素tag和class name来缩小获取购物车按钮的范围。shopping_cart_icon = self.driver.\ 　　　　find_element_by_css_selector("div.header-minicart span.icon")
+2020-10-25 19:57
+首先定位到tag 名为<div>的元素，然后接着“.header-minicart”的类名，其下面的标签<span>下又有“.icon”的类名。
+2020-10-25 19:58
+3.2.7　Link定位
+2020-10-25 19:58
+find_element_by_link_text() 和 find_elements_by_link_text()方法是通过文本链接来定位元素。如下示例。
+2020-10-25 19:58
+（2）查看对应的HTML代码，具体如下。<a href="#header-account" class="skip-link skip-account"> 　<span class="icon"></span> 　<span class="label">Account</span> </a>
+2020-10-25 19:58
+（3）编写测试脚本，先通过文本定位Account链接，然后单击查看是否能显示。def test_my_account_link_is_displayed(self): 　　# get the Account link 　　account_link = 　　　self.driver.find_element_by_link_text("ACCOUNT") 　　# check My Account link is displayed...
+2020-10-25 19:58
+3.2.8　Partial link定位
+2020-10-25 19:58
+find_element_by_partial_link_text()和find_elements_by_partial_link_text()两个方法是通过文本链接的一部分文本来定位元素的方法。
+2020-10-25 19:59
+（1）同样是首页，有两个链接可以查看个人账户（Account）页面，一个是页面标头（header）部分的Account文字链接，另外一个是页脚（footer）部分的My Account文字链接。（2）我们使用find_elements_by_partial_link_text()方法，通过部分文本信息“Account”来定位，验证页面中的两个文本链接是否都能定位到（断言）。代码如下。
+2020-10-25 20:24
+def test_account_links(self): 　　# get the all the links with Account text in it 　　account_links = self.driver.\ 　　　　find_elements_by_partial_link_text("ACCOUNT") 　　# check Account and My Account link is displayed/vis...
+2020-10-25 20:24
+3.3　方法实践
+2020-10-25 20:24
+（1）创建一个名为homepagetest.py的Python脚本，整合之前我们创建的那些测试代码。
+2020-10-25 20:25
+import unittest from selenium import webdriver class HomePageTest(unittest.TestCase): 　　@classmethod 　　def setUpClass(cls): 　　　　# create a new Firefox session 　　　　cls.driver = webdriver.Firefox() 　　　　cls.driver.im...
+2020-10-25 20:25
+def test_search_text_field_max_length(self): 　　　　# get the search textbox 　　　　search_field = self.driver. 　　　　　find_element_by_id("search") 　　　　# check maxlength attribute is set to 128 　　　　self.assertEqual("128", s...
+2020-10-25 20:25
+def test_search_button_enabled(self): 　　　　# get Search button 　　　　search_button = self.driver. 　　　　　find_element_by_class_name("button") 　　　　# check Search button is enabled 　　　　self.assertTrue(search_button.is_enab...
+2020-10-25 20:25
+def test_my_account_link_is_displayed(self): 　　　　# get the Account link 　　　　account_link = 　　　　　self.driver.find_element_by_link_text("ACCOUNT") 　　　　# check My Account link is displayed/visible in 　　　　# the Home page...
+2020-10-25 20:25
+def test_account_links(self): 　　　　# get the all the links with Account text in it 　　　　account_links = self.driver.\ 　　　　　find_elements_by_partial_link_text("ACCOUNT") 　　　　# check Account and My Account link is 　　　　#...
+2020-10-25 20:25
+def test_count_of_promo_banners_images(self): 　　　　# get promo banner list 　　　　banner_list = self.driver. 　　　　　find_element_by_class_name("promos") 　　　　# get images from the banner_list 　　　　banners = banner_list. 　　　　...
+2020-10-25 20:25
+def test_vip_promo(self): 　　　　# get vip promo image 　　　　vip_promo = self.driver.\ 　　　　　　find_element_by_xpath("//img[@alt= 　　　　　　'Shop Private Sales - Members Only']") 　　　　# check vip promo logo is displayed on home...
+2020-10-25 20:26
+def test_shopping_cart_status(self): 　　　　# check content of My Shopping Cart block 　　　　# on Home page 　　　　# get the Shopping cart icon and click to 　　　　# open the Shopping Cart section 　　　　shopping_cart_icon = self.d...
+2020-10-25 20:26
+def tearDownClass(cls): 　　　　# close the browser window 　　　　cls.driver.quit() if __name__ == '__main__': 　　unittest.main(verbosity=2)
+第4章 Selenium Python API介绍
+2020-10-25 20:26
+Web应用程序通过HTML表单的形式把数据发送到服务端。HTML表单中的输入元素包含文本框、复选框、单选框和提交按钮等。一个表单也可以包含下拉列表、文本域、插图和标签等元素。一个典型的Web应用程序从注册用户或搜索产品开始，往往需要填写很多的表单信息。表单是内嵌在HTML代码的<form>标签里的。标签中指定了提交数据的方法，可以使用GET和POST方法，输入到表单请求的地址就是我们要提交数据的服务器地址。
+2020-10-25 20:27
+4.1　HTML表单元素
+2020-10-25 20:27
+HTML表单是由不同类型的元素组成的，如下图所示包含<form>、<input>、<button>和<label>等元素。
+2020-10-25 20:27
+4.2　WebDriver原理
+2020-10-25 20:28
+WebDirver提供许多用来与浏览器交互的功能和设置。我们可以通过使用WebDirver的功能和一些方法来实现与浏览器窗口、警告、框架和弹出窗口的交互。它也提供了自动化操作浏览器导航栏、设置cookies、截屏等方便我们测试的特性。
+2020-10-25 20:28
+在下面的网址可以看到完整的WebDirver的properties和方法列表。http://selenium.googlecode.com/git/docs/api/py/webdriver_remote/selenium.webdriver.remote.webdriver.html#moduleselenium.webdriver.remote.webdriver
+2020-10-25 20:28
+4.2.1　WebDriver功能
+2020-10-25 20:28
+WebDriver通过下表的功能来操纵浏览器。功能/属性描　　述实　　例current_url获取当前页面的URL地址driver.current_urlcurrent_window_handle获取当前窗口的句柄driver.current_window_handlename获取该实例底层的浏览器名称driver.name
+2020-10-25 20:29
+orientation获取当前设备的方位driver.orientationpage_source获取当前页面的源代码driver.page_sourcetitle获取当前页面的标题driver.titlewindow_handles获取当前session里所有窗口的句柄driver.window_handles4.2.2　WebDriver方法
+2020-10-25 20:29
+4.2.2　WebDriver方法
+2020-10-25 20:29
+方　　法描　　述参　　数实　　例back()后退一步到当前会话的浏览器历史记录中最后一步操作前的页面driver.back()
+2020-10-25 20:29
+close()关闭当前浏览器窗口driver.close()forward()前进一步到当前会话的浏览器历史记录中前一步操作后的页面driver.forward()
+2020-10-25 20:30
+get(url)访问目标URL并加载网页到当前的浏览器会话URL是目标网页的网站地址driver.get("http://www.google.com")
+2020-10-25 20:30
+maximize_window()最大化当前浏览器窗口driver.maximize_window()quit()退出当前driver并且关闭所有的相关窗口driver.quit()
+2020-10-25 20:30
+refresh()刷新当前页面driver.refresh()
+2020-10-25 20:30
+switch_to_active_element()返回当前页面唯一焦点所在的元素或者元素体driver.switch_to_active_element()
+2020-10-25 20:30
+switch_to_alert()把焦点切换至当前页面弹出的警告driver.switch_to_alert()
+2020-10-25 20:30
+switch_to_default_content()切换焦点至默认框架内driver.switch_to_default_content()
+2020-10-25 20:30
+switch_to-frame(frame_reference)通过索引、名称和网页元素将焦点切换到指定的框架，这种方法也适用于IFRAMESframe_reference: 要切换的目标窗口的名称、整数类型的索引或者要切换的目标框架的网页元素driver.switch_to_frame('frame_name')
+2020-10-25 20:30
+switch_to_window(window_name)切换焦点到指定的窗口window_name： 要切换的目标窗口的名称或者句柄driver.switch_to_window('main')
+2020-10-25 20:31
+implicitly_wait(time_to_wait)超时设置等待目标元素被找到，或者目标指令执行完成。该方法在每个session只需要调用一次。execute_async_script的超时设置，请参阅set_script_timeout方法time_to_wait: 等待时间（单位为秒）
+2020-10-25 20:31
+set_page_load_timeout(time_to_wait)设置一个页面完全加载完成的超时等待时间time_to_wait: 等待时间（单位为秒）driver.set_page_load_timeout(30)
+2020-10-25 20:31
+set_script_timeout(time_to_wait)设置脚本执行的超时时间，应该在execute_async_script抛出错误之前time_to_wait: 等待时间（单位为秒）driver.set_script_timeout(30)
+2020-10-25 20:32
+4.3　WebElement接口
+2020-10-25 20:32
+我们可以通过WebElement实现与网站页面上的元素的交互。这些元素包含文本框、文本域、按钮、单选框、多选框、表格、行、列和div等。
+2020-10-25 20:32
+WebElement提供了一些功能、属性和方法来实现与网页元素的交互。本节的表格中将列出后面章节会用到的一些重要的功能和方法。如果想查看完整的功能和方法详情，请访问以下网站。http://selenium.googlecode.com/git/docs/api/py/webdriver_remote/selenium.webdriver.remote.webelement.html#module-selenium.webdriver.r...
+2020-10-25 20:32
+4.3.1　WebElement功能
+2020-10-25 20:32
+功能/属性描　　述实　　例size获取元素的大小element.sizetag_name获取元素的HTML标签名称element.tag_nametext获取元素的文本值element.text
+2020-10-25 20:32
+4.3.2　WebElement方法
+2020-10-25 20:32
+方　　法描　　述参　　数实　　例clear()清除文本框或者文本域中的内容element.clear()click()单击元素element.click()get_attribute(name)获取元素的属性值name：元素的名称element.get_attribute("value") 或者 element.get_attribute("maxlength")
+2020-10-25 20:33
+is_displayed()检查元素对于用户是否可见element.is_displayed()is_enabled()检查元素是否可用element.is_enabled()is_selected()检查元素是否被选中。该方法应用于复选框和单选按钮element.is_selected
+2020-10-25 20:33
+send_keys(*value)模拟输入文本value：待输入的字符串element.send_keys("foo")submit()用于提交表单。如果对一个元素应用此方法，将会提交该元素所属的表单element.submit()
+2020-10-25 20:33
+value_of_css_property (property_name)获取CSS属性的值property_name： CSS属性的名称element.value_of_css_property ("backgroundcolor")
+2020-10-25 20:33
+4.4　操作表单、文本框、复选框、单选按钮
+2020-10-25 20:33
+我们可以使用WebElement实现与各种HTML控件的自动化交互，例如在一个文本框输入文本、单击一个按钮、选择单选按钮或者复选框、获取元素的文本和属性值等。
+2020-10-25 20:34
+在本节中，我们将使用WebElement及其功能和方法实现在样例程序中创建账户功能的自动化。接下来我们创建一个测试脚本，来验证被测程序是否能正确创建一个新的账户。我们将按照下图来填写表单信息并且提交请求，系统收到请求后应该创建一个新的账户。
+2020-10-25 20:34
+正如在上图看到的，我们需要填写5个文本框并且选择一个复选框。（1）首先，创建一个新的测试类 RegisterNewUser，下面是实例代码。
+2020-10-25 20:34
+from selenium import webdriver import unittest class RegisterNewUser(unittest.TestCase): 　　def setUp(self): 　　　　self.driver = webdriver.Firefox 　　　　self.driver.implicitly_wait(30) 　　　　self.driver.maximize_window() 　　　　# ...
+2020-10-25 20:35
+（2）添加一个测试方法 test_register_new_user(self) 到RegisterNewUser类中。（3）为了打开登录页面，我们需要单击主页的登录链接。用于登录的代码如下。def test_register_new_user(self): 　　driver = self.driver 　　# click on Log In link to open Login page 　　driver.find_element_...
+2020-10-25 20:35
+4.4.1　检查元素是否启用或显示
+2020-10-25 20:35
+当元素在屏幕上可见的时候（visible属性设置为TRUE），调用is_displayed() 方法返回为TRUE，反之就会返回FALSE。类似地，当元素是可用的时候，调用is_enabled() 方法返回为TRUE，这时用户就可以执行点击和输入文本等操作。当元素是不可用的时候，该方法返回FALSE。
+2020-10-25 20:35
+用户登录页面提供了使用已有账户登录和创建新用户的选项。我们可以通过调用is_displayed()方法和is_enabled()方法检查创建新账户按钮对于用户是否可见并且可用。添加下面的代码到测试类中。
+2020-10-25 20:35
+# get the Create Account button 　　　　create_account_button = driver.find_element_by_xpath("// button[@title='Create an Account']") 　　　　# check Create Account button is displayed and enabled 　　　　self.assertTrue(create_acco...
+2020-10-25 20:35
+我们要测试创建账户功能，因此要单击创建账户按钮，然后将会展示创建新账户的页面。我们可以通过检查WebDriver 的 title 属性来校验打开的页面是否符合预期结果，代码如下。
+2020-10-25 20:35
+# click on Create Account button. This will display # new account create_account_button.click() # check title self.assertEquals("Create New Customer Account - 　Magento Commerce Demo Store", driver.title)
+2020-10-25 20:35
+在创建新账户页面，可以通过调用 find_element_by_* 方法来查找定位所有的元素。
+2020-10-25 20:36
+# get all the fields from Create an Account form first_name = driver.find_element_by_id("firstname") last_name = driver.find_element_by_id("lastname") email_address = driver.find_element_by_id("email_address") news_lette...
+2020-10-25 20:36
+4.4.2　获取元素对应的值
+2020-10-25 20:36
+get_attribute()方法可以用来获取元素的属性值。例如，单个测试是用来验证输入姓和名字的文本框的最大字符限制是255，字符限制就是通过maxlength属性来实现的，如下代码所示设置值为255。
+2020-10-25 20:36
+<input type="text" id="firstname" name="firstname" value="" 　title="First Name" maxlength="255" class="input-text required-entry">我们可以通过调用get_attribute()方法来校验maxlength 属性是否正确。
+2020-10-25 20:36
+（1）需要把属性名称作为参数传递给get_attribute()方法。# check maxlength of first name and last name textbox self.assertEqual("255", first_name.get_attribute("maxlength"))
+2020-10-25 20:36
+self.assertEqual("255", last_name.get_attribute("maxlength"))
+2020-10-25 20:36
+（2）添加以下代码到测试脚本中，以确保所有的字段对于用户都是可见和可用的。# check all fields are enabled 　　　　self.assertTrue(first_name.is_enabled()and last_name.is_enabled() 　　　　　 and email_address.is_enabled() and news_letter_subscription.is_enabled() 　　　...
+2020-10-25 20:37
+4.4.3　is_selected()方法is_selected() 方法是针对单选按钮和复选框的。我们可以通过调用该方法来得知一个单选按钮或复选框是否被选中。单选按钮或复选框可以通过WebElement 的 click() 方法来执行点击操作，从而选中该元素。如下面的例子，检查Sign UP for Newsletter 复选框是否默认为不被选中的，示例代码如下。
+2020-10-25 20:37
+# check Sign Up for Newsletter is unchecked 　　　　self.assertFalse(news_letter_subscription.is_selected())
+2020-10-25 20:37
+4.4.4　clear()与send_keys()方法
+2020-10-25 20:37
+clear() 和 send_keys()方法适用于文本框和文本域，分别用于清除元素的文本内容和模拟用户操作键盘来输入文本信息。待输入的文本作为send_keys() 方法的参数。
+2020-10-25 20:37
+（1）添加下面的代码，通过send_keys() 方法来给对应的字段填写值。
+2020-10-25 20:37
+# fill out all the fields first_name.send_keys("Test") last_name.send_keys("User1") news_letter_subscription.click() email_address.send_keys("TestUser_150214_2200@example.com") password.send_keys("tester") confirm_passwo...
+2020-10-25 20:37
+（2）最终通过校验欢迎信息来检查用户是否创建成功。我们可以通过text 属性来获取元素的文本内容。# check new user is registered self.assertEqual("Hello, Test User1!", driver.find_ 　　element_by_css_selector("p.hello > strong").text) self.assertTrue(driver.find_element_...
+2020-10-25 20:37
+（3）下面是创建一个账户功能的完整测试。运行这个测试脚本将看到在 Create An Account 页面的所有操作。
+2020-10-25 20:38
+from selenium import webdriver from time import gmtime, strftime import unittest class RegisterNewUser(unittest.TestCase): 　　def setUp(self): 　　　　self.driver = webdriver.Firefox() 　　　　self.driver.implicitly_wait(30) 　　　...
+2020-10-25 20:38
+def test_register_new_user(self): 　　　　driver = self.driver 　　　　# click on Log In link to open Login page 　　　　driver.find_element_by_link_text("ACCOUNT").click() 　　　　driver.find_element_by_link_text("My Account").click() ...
+2020-10-25 20:38
+　self.assertTrue(create_account_button. 　　　　　is_displayed() and 　　　　　create_account_button.is_enabled()) 　　　　# click on Create Account button. This will 　　　　# display new account 　　　　create_account_button.click() 　　　　# c...
+2020-10-25 20:38
+find_element_by_id("lastname") 　　　　email_address = driver.find_element_by_id("email_address") 　　　　password = driver.find_element_by_id("password") 　　　　confirm_password = driver.find_element_by_id("confirmation") 　　　　news...
+2020-10-25 20:38
+　# last name textbox 　　　　self.assertEqual("255", first_name.get_attribute("maxlength")) 　　　　self.assertEqual("255", last_name.get_attribute("maxlength")) 　　　　# check all fields are enabled 　　　　self.assertTrue(first_name....
+2020-10-25 20:38
+is_enabled() 　　　　　and submit_button.is_enabled()) 　　　　# check Sign Up for Newsletter is unchecked 　　　　self.assertFalse(news_letter_subscription. is_selected()) 　　　　user_name = "user_" + strftime ("%Y%m%d%H%M%S", gmtime()...
+2020-10-25 20:38
+com") 　　　　password.send_keys("tester") 　　　　confirm_password.send_keys("tester") 　　　　# click Submit button to submit the form 　　　　submit_button.click() 　　　　# check new user is registered 　　　　self.assertEqual("Hello, Test ...
+2020-10-25 20:38
+text ("Log Out").is_displayed()) 　　def tearDown(self): 　　　　self.driver.quit() if __name__ == "__main__": 　　unittest.main(verbosity=2)
+2020-10-25 20:38
+4.5　操作下拉菜单
+2020-10-25 20:39
+下拉菜单和列表是通过HTML的<select> 元素实现的。选择项是通过<select>中的<option>元素实现的，如下HTML代码。<select id="select-language" title="Your Language" 　onchange="window.location.href=this.value"> 　<option value="http://demo.magentocommerce.com/? 　　___...
+2020-10-25 20:39
+每个<option> 元素都有属性值和文本内容，是用户可见的。例如，在下面的代码中，<option>设置的是店铺的URL，后面参数设置的是语言种类，这里是French。<option value="http://demo.magentocommerce.com/customer/ 　account/create/?___store=french&amp; 　___from_store=default">French</option>
+2020-10-25 20:39
+4.5.1　Select原理
+2020-10-25 20:39
+Select 类是Selenium的一个特定的类，用于与下拉菜单和列表交互。它提供了丰富的功能和方法来实现与用户交互。下面两小节的表格列出来Select类中所有的功能和方法。你也可以在下面网址获取类似信息。http://selenium.googlecode.com/git/docs/api/py/webdriver_support/selenium.webdriver.support.select.html#module- selen...
+2020-10-25 20:39
+4.5.2　Select功能
+2020-10-25 20:39
+功能/属性描　　述实　　例all_selected_options获取下拉菜单和列表中被选中的所有选项内容select_element.all_selected_optionsfirst_selected_option获取下拉菜单和列表的第一个选项／当前选择项select_element.first_selected_optionoptions获取下拉菜单和列表的所有选项select_element.options4.5.3　Selec...
+2020-10-25 20:39
+4.5.3　Select方法
+2020-10-25 20:39
+功能/属性描　　述参　　数实　　例deselect_all()清除多选下拉菜单和列表的所有选择项select_element.deselect_all()deselect_by_index(index)根据索引清除下拉菜单和列表的选择项index：要清除的目标选择项的索引select_element.deselect_by_index(1)
+2020-10-25 20:40
+deselect_by_value(value)清除所有选项值和给定参数匹配的下拉菜单和列表的选择项value：要清除的目标选择项的value属性select_element.deselect_by_value("foo")deselect_ by_visible_text(text)清除所有展示的文本和给定参数匹配的下拉菜单和列表的选择项text：要清除的目标选择项的文本值select_element.deselect_by_visi...
+2020-10-25 20:40
+select_by_index(index)根据索引选择下拉菜单和列表的选择项index：要选择的目标选择项的索引select_element.select_by_index(1)select_by_value(value)选择所有选项值和给定参数匹配的下拉菜单和列表的选择项value：要选择的目标选择项的value属性select_element.select_by_value("foo")
+2020-10-25 20:40
+select_by_visible_text(text)选择所有展示的文本和给定参数匹配的下拉菜单和列表的选择项text：要选择的目标选择项的文本值select_element.select_by_visible_text("bar")
+2020-10-25 20:41
+我们将为前面章节创建好的主页面的测试类添加一个新的测试用例。这个测试用例用来验证是否有8种语言可供用户选择。我们将首先使用options 属性来验证选项的个数是否和预期结果一致，然后通过获取每个选项的文本来与预期的选项列表相比较，从而校验是否一致，代码如下所示。
+2020-10-25 20:41
+def test_language_options(self): 　　# list of expected values in Language dropdown 　　exp_options = ["ENGLISH", "FRENCH", "GERMAN"] 　　# empty list for capturing actual options displayed 　　# in the dropdown 　　act_options = ...
+2020-10-25 20:41
+options in dropdown 　　self.assertEqual(2, len(select_language.options)) 　　# get options in a list 　　for option in select_language.options: 　　　　act_options.append(option.text) 　　# check expected options list with actual ...
+2020-10-25 20:41
+　select_language.select_by_visible_text("German") 　　# check store is now German 　　self.assertTrue("store=german" in self.driver.current_url) 　　# changing language will refresh the page, 　　# we need to get find language d...
+2020-10-25 20:41
+options属性返回一个下拉选项和列表里的所有<option> 元素。选项列表里的每个选项都是一个WebElement类的实例。我们也可以通过用first_selected_option属性来校验默认/当前选择项是否正确。 all_selected_options 属性是用来测试多选的下拉选项和列表的。
+2020-10-25 20:41
+最后，我们用下面的代码来实现：选择一个语言选项，然后校验保存的URL是否能够随着语言选项的改变而正确地变化。
+2020-10-25 20:41
+# select an option using select_by_visible text select_language.select_by_visible_text("German") # check store is now German self.assertTrue("store=german" in self.driver.current_url)一个或多个选项可以基于索引来选择（该选项在列表中的位置），也可以根据属性值...
+2020-10-25 20:41
+4.6　操作警告和弹出框
+2020-10-25 20:42
+4.6.1　Alert 原理
+2020-10-25 20:43
+Selenium WebDriver 通过Alert 类来操控 JavaScript 警告。Alert 包含的方法有接受、驳回、输入和获取警告的文本。
+2020-10-25 20:43
+4.6.2　Alert功能
+2020-10-25 20:56
+功能/属性描　　述实　　例text获取警告窗口的文本alert.text
+2020-10-25 21:24
+4.6.3　Alert方法
+2020-10-25 21:24
+方　　法描　　述参　　数实　　例accept()接受JavaScript 警告信息，单击OK 按钮alert.accept()dismiss()驳回JavaScript 警告信息，单击取消按钮alert.dismiss()
+2020-10-25 21:25
+send_ keys(*value)模拟给元素输入信息value：待输入目标字段的字符串alert.send_keys("foo")
+2020-10-25 21:25
+用户先添加产品进行比较，然后移除一个或多个产品时，被测程序将会显示一个如下图这样的告警信息。
+2020-10-25 21:25
+我们将设计一个测试来验证单击COMPARE PRODUCTS（产品比较）功能中的Clear All链接时，是否会弹出警告提醒用户。
+2020-10-25 21:25
+创建一个新的测试类CompareProducts，并添加测试场景的代码，搜索并添加一个产品到比较列表中，代码如下。
+2020-10-25 21:25
+from selenium import webdriver import unittest class CompareProducts(unittest.TestCase): 　　def setUp(self): 　　　　self.driver = webdriver.Firefox() 　　　　self.driver.implicitly_wait(30) 　　　　self.driver.maximize_window()
+2020-10-25 21:25
+self.driver.get("http://demo.magentocommerce.com/") 　　def test_compare_products_removal_alert(self): 　　　　# get the search textbox 　　　　search_field = self.driver.find_element_by_name("q") 　　　　search_field.clear() 　　　　# en...
+2020-10-25 21:25
+self.driver.\ 　　　　　　find_element_by_link_text("Add to Compare").click()
+2020-10-25 21:25
+当单击Add to Compare 链接将一个产品添加到比较列表时，将会看到一个产品添加到COMPARE PRODUCTS 下面。这个时候还可以添加其他的产品到比较列表。如果想从比较列表移除所有的产品，可以在COMPARE PRODUCTS 模块单击Clear All 链接。这个时候可以看到一个警告提示“是否确认移除所有的产品”。我们可以通过Alert来操控这个警告。调用WebDirver 的Switch_to_alert() 方法可以...
+2020-10-25 21:26
+# click on Remove this item link, this will display 　　# an alert to the user 　　self.driver.find_element_by_link_text("Clear All").click() 　　# switch to the alert 　　alert = self.driver.switch_to_alert() 　　# get the text f...
+2020-10-25 21:26
+4.6.4　浏览器自动化处理
+2020-10-25 21:26
+通过单击浏览器工具栏上的后退、前进、刷新／重新加载按钮，可以实现访问历史页面、刷新当前页面等操作。Selenium WebDriver API 提供了很多操控这些按钮的方法，我们可以使用这些方法来验证浏览器的行为。WebDriver 类提供了以下方法来操控浏览器的后退、前进和刷新等操作。
+2020-10-25 21:26
+方　　法描　　述参　　数实　　例back()后退到浏览器当前会话的历史记录中的前一步操作无driver.back()forward()向前一步到浏览器当前会话的历史记录中的后一步操作无driver.forward()
+2020-10-25 21:56
+refresh()刷新浏览器中的当前页面无driver.refresh()
+2020-10-25 21:56
+下面的例子是通过浏览器API操控浏览器历史记录并验证程序的状态。
+2020-10-25 21:57
+import unittest from selenium import webdriver from selenium.webdriver.support.ui import WebDriverWait from selenium.webdriver.support import expected_conditions class NavigationTest(unittest.TestCase): 　　def setUp(self)...
+2020-10-25 21:57
+search_field.clear() 　　　# enter search keyword and submit 　　　search_field.send_keys("selenium webdriver") 　　　search_field.submit() 　　　se_wd_link = driver.find_element_by_link_text("Selenium WebDriver") 　　　se_wd_link.clic...
+2020-10-25 21:57
+) 　　　driver.forward() 　　　self.assertTrue(WebDriverWait(self.driver, 10) 　　　　　.until(expected_conditions.title_is 　　　　　　("Selenium WebDriver"))) 　　　driver.refresh() 　　　self.assertTrue(WebDriverWait(self.driver, 10) 　　　　.u...
+2020-10-25 21:57
+if __name__ == '__main__': 　　unittest.main()
+第5章 元素等待机制
+2020-10-25 21:58
+我们需要在测试脚本中引入延时机制，来使脚本的运行速度与程序的响应速度相匹配。换句话说，我们需要使脚本和程序的响应能够同步。WebDriver为这种同步提供了隐式等待和显式等待两种机制。
+2020-10-25 21:58
+5.1　隐式等待
+2020-10-25 21:59
+当设置了隐式等待时间后，WebDriver会在一定的时间内持续检测和搜寻DOM，以便于查找一个或多个不是立即加载成功并可用的元素。一般情况下，隐式等待的默认超时时间设置为0。一旦设置，隐式等待时间就会作用于这个WebDriver实例的整个生命周期或者一次完整测试的执行期间，并且WebDriver会使其对所有测试步骤中包含整个页面的元素的查找时都有效，除非把默认超时时间设置回0。
+2020-10-25 22:16
+WebDriver类提供了implicitly_wait()方法来配置超时时间。
+2020-10-25 22:17
+import unittest from selenium import webdriver class SearchProductTest(unittest.TestCase): 　　def setUp(self): 　　　　# create a new Firefox session 　　　　self.driver = webdriver.Firefox()
+2020-10-25 22:17
+self.driver.implicitly_wait(30) 　　　　self.driver.maximize_window() 　　　　# navigate to the application home page 　　　　self.driver.get("http://demo.magentocommerce.com/") 　　def test_search_by_category(self): 　　　　# get the sea...
+2020-10-25 22:17
+send_keys("phones") 　　　　self.search_field.submit() 　　　　# get all the anchor elements which have product names 　　　　# displayed currently on result page using 　　　　# find_elements_by_xpath method 　　　　products = self.driver\...
+2020-10-25 22:17
+def tearDown(self): 　　　　# close the browser window 　　　　self.driver.quit() if __name__ == '__main__': 　　unittest.main(verbosity=2)
+2020-10-25 22:17
+应尽量避免在测试中隐式等待与显式等待混合使用，来处理同步问题。相比隐式等待，显式等待能提供更好的可操控性。
+2020-10-25 22:17
+5.2　显式等待
+2020-10-25 22:18
+显式等待比隐式等待具备更好的操控性。与隐式等待不同，我们可以为脚本设置一些预置或定制化的条件，等待条件满足后再进行下一步测试。
+2020-10-25 22:18
+显式等待可以只作用于仅有同步需求的测试用例。WebDriver提供了WebDriverWait类和expected_conditions类来实现显式等待。
+2020-10-25 22:18
+expected_conditions类提供了一些预置条件，来作为测试脚本进行下一步测试的判断依据。让我们创建一个包含显式等待的简单的测试，条件是等待一个元素可见，代码如下。
+2020-10-25 22:18
+from selenium import webdriver from selenium.webdriver.common.by import By from selenium.webdriver.support.ui import WebDriverWait from selenium.webdriver.support import expected_conditions import unittest class Explicit...
+2020-10-25 22:18
+select- 　　　　　　　language").get_attribute("length") == "3") 　　　　account = WebDriverWait(self.driver, 10)\ 　　　　　　.until(expected_conditions. 　　　　　　　visibility_of_element_located 　　　　　　　　　((By.LINK_TEXT, "ACCOUNT"))) 　　　　acc...
+2020-10-25 22:18
+在上面的测试中，显式等待条件是等到Log In链接在DOM中可见。
+2020-10-25 22:19
+使用visibility_of_element_located方法来判断预期条件是否满足。该条件判断方法需要设置符合要求的定位策略和位置详细信息。脚本将一直查找目标元素是否可见，直到达到最大等待时间10秒。一旦根据指定的定位器找到了元素，预期条件判定方法将会把定位到的元素返回给测试脚本。如果在设定的超时时间内，仍然没有通过定位器找到可见的目标元素，将会抛出TimeoutException异常。
+2020-10-25 22:19
+5.3　expected_conditions类
+2020-10-25 22:19
+预 期 条 件描　　述参　　数实　　例
+2020-10-25 22:19
+element_to_be_clickable(locator)等待通过定位器查找的元素可见并且可用，以便确定元素是可点击的。 此方法返回定位到的元素locator: 一组（by,locator）WebDriverWait(self.driver, 10).until(expected_conditions.element_to_be_clickable((By.NAME,"is_subscribed")))
+2020-10-25 22:20
+element_to_be_selected(element)等待直到指定的元素被选中element： 是个WebElementsubscription = self.driver.find_element_by_name("is_subscribed") WebDriverWait(self.driver, 10). until(expected_conditions. element_to_be_selected(subscript...
+2020-10-25 22:20
+invisibility_of_element_located(locator)等待一个元素在DOM中不可见或不存在locator: 一组（by,locator）WebDriverWait(self.driver, 10). until(expected_conditions. invisibility_of_element_located((By. ID,"loading_banner")))
+2020-10-25 22:20
+presence_of_all_elements_located(locator)等待直到至少有一个定位器查找匹配到的目标元素出现在网页中。 该方法返回定位到的一组WebElementlocator: 一组（by,locator）WebDriverWait(self.driver, 10). until(expected_conditions.presence_of_all_elements_located((By.CLASS _NAM...
+2020-10-25 22:20
+presence_of_element_located(locator)等待直到定位器查找匹配到的目标元素出现在网页中或可以在DOM中找到。 该方法返回一个被定位到的元素locator: 一组（by,locator）WebDriverWait(self.driver, 10). until(expected_conditions.presence_of_element_located((By.ID,"search")))
+2020-10-25 22:20
+text_to_be_present_in_element(locator,text_)等待直到元素能被定位到并且带有相应的文本信息locator: 一组（by,locator） text:需要被校验的文本内容WebDriverWait(self.driver,10). until(expected_conditions.text_to_be_present_in_element((By.ID,"select-language"),"E...
+2020-10-25 22:20
+title_contains(title)等待网页标题包含指定的大小写敏感的字符串。 该方法在匹配成功时返回True，否则返回Falsetitle: 被校验的包含在标题中的字符串WebDriverWait(self.driver, 10). until(expected_conditions.title_contains("Create NewCustomer Account"))
+2020-10-25 22:20
+title_is(title)等待网页标题与预期的标题相一致。 该方法在匹配成功时返回True，否则返回Falsetitle:网页的标题WebDriverWait(self.driver, 10). until(expected_conditions.title_is("Create New CustomerAccount -MagentoCommerce Demo Store"))
+2020-10-25 22:20
+visibility_of(element)等待直到元素出现在DOM中，是可见的，并且宽和高都大于0。 一旦其变成可见的，该方法将返回（同一个）WebElementelement ： 目标WebElementfirst_name = self.driver.find_element_by_id("firstname") WebDriverWait(self.driver, 10). until(expected_conditions.v...
+2020-10-25 22:21
+visibility_of_element_located(locator)等待直到根据定位器查找的目标元素出现在DOM中，是可见的，并且宽和高都大于0。 一旦其变成可见的，该方法将返回WebElementlocator: 一组（by,locator）WebDriverWait(self.driver, 10). until(expected_conditions.visibility_of_element_located((By.ID...
+2020-10-25 22:21
+在下面的网址可看到预期条件判断的完整列表：http://selenium.googlecode.com/git/docs/api/py/webdriver_support/selenium.webdriver. support.expected_conditions.html#module-selenium. webdriver.support. expected_conditions。
+2020-10-25 22:21
+5.3.1　判断某个元素是否存在
+2020-10-25 22:21
+在下面的例子里，我们将等待一个元素变成可用或可点击。我们可以在Ajax 应用较多的程序中使用这个预期等待条件，这样表单中一个字段是否可用取决于表单中别的字段或过滤器。该例子中，我们单击Log In链接，然后等待Create an Account按钮变成可点击的，这些元素都在登录页面。最后我们单击Create an Account按钮，等待下一个页面加载完成并显示出来。
+2020-10-25 22:21
+def test_create_new_customer(self): 　　# click on Log In link to open Login page 　　self.driver.find_element_by_link_text("ACCOUNT").click() 　　# wait for My Account link in Menu 　　my_account = WebDriverWait(self.driver, 10...
+2020-10-25 22:22
+)) 　　my_account.click() 　　# get the Create Account button 　　create_account_button = WebDriverWait(self.driver, 10)\ 　　　　.until(expected_conditions.element_to_be_clickable((By.LINK_ 　　　　TEXT, "CREATE AN ACCOUNT"))) 　　# cl...
+2020-10-25 22:22
+Create New Customer Account"))
+2020-10-25 22:22
+我们等待并检查一个元素是否可用，可以用element_to_be_clickable预期条件。该方法需要指定定位策略或具体定位的位置。当目标元素变成可点击或者可用的时候，该方法返回定位到的目标元素给测试脚本。前面的测试也介绍了通过检测标题是否含有指定的文本内容，来确定创建新用户页面是否加载成功。我们使用title_contains预期条件来检测，以确保指定的字符串能够与预期网页标题的子字符串相匹配。
+2020-10-25 22:22
+5.3.2　判断是否存在Alerts
+2020-10-25 22:22
+我们也可以将显式等待应用于警告和页面框架中。例如，一个复杂的JavaScript处理过程或后端处理过程需要花费较多的时间把警告反馈给用户，这时可以用alert_is_present这个预期判断条件来实现，代码如下。
+2020-10-25 22:22
+from selenium import webdriver from selenium.webdriver.support.ui import WebDriverWait from selenium.webdriver.common.by import By from selenium.webdriver.support import expected_conditions import unittest class CompareP...
+2020-10-25 22:22
+webdriver.Firefox() 　　　　self.driver.get("http://demo.magentocommerce.com/") 　　def test_compare_products_removal_alert(self): 　　　　# get the search textbox 　　　　search_field = self.driver.find_element_by_name("q") 　　　　searc...
+2020-10-25 22:22
+　find_element_by_link_text("Add to Compare").click() 　　　　# wait for Clear All link to be visible 　　　　clear_all_link = WebDriverWait(self.driver, 10)\ 　　　　　　.until(expected_conditions.visibility_of_element_ 　　　　　　located(...
+2020-10-25 22:22
+　alert = WebDriverWait(self.driver, 10)\ 　　　　　　.until(expected_conditions.alert_is_present()) 　　　　# get the text from alert 　　　　alert_text = alert.text 　　　　# check alert text 　　　　self.assertEqual("Are you sure you would ...
+2020-10-25 22:23
+上述的测试脚本，是验证从产品比较列表中移除所有的产品这个功能。当用户移除一个产品的时候，会收到是否确认的警告。Alert_is_present 预期判定条件就可以用来检测警告窗口是否出现，并且把警告窗口返回给脚本，以进行后续的动作。该脚本将会等待10秒的时间来检测警告窗口是否出现，如果没有出现就抛出异常。
+2020-10-25 22:23
+5.4　预期条件判断的实践正
+2020-10-25 22:23
+我们也可以通过WebDriverWait 来自定义预期等待条件。当没有合适的预期等待条件可用的时候，自定义的预期等待条件也是非常有效的。让我们来修改一个前面章节中创建好的测试脚本，实现一个自定义的预期条件判断，来检测下拉列表中可选项的数量。
+2020-10-25 22:23
+def testLoginLink(self): 　　WebDriverWait(self.driver, 10).until 　　　(lambda s: s.find_element_by_id 　　　("select-language").get_attribute("length") == "3") 　 　　login_link = WebDriverWait 　　　(self.driver, 10).until(expected...
+2020-10-25 22:23
+我们可以使用Python的lambda表达式，并且基于WebDriverWait来实现自定义的预期条件判断。上面的例子中，脚本将会等待10秒，直到Select Language下拉列表中有8个可选项。当下拉列表是通过Ajax调用来实现，并且脚本需要等待下拉列表中的所有选项都是可选择时，该预期条件判断是非常有用的。
+第6章 跨浏览器测试
+2020-10-25 22:25
+第6章 跨浏览器测试
+2020-10-25 22:25
+Selenium支持由多种浏览器和操作系统组合的跨浏览器测试。该特性通过在不同浏览器和操作系统的组合场景下执行测试，来验证Web程序的跨浏览器兼容性，从而确保用户在他们喜好选择的浏览器和操作系统上使用程序时不会遇到问题。Selenium WebDriver支持在远程机器上执行测试，并且能够把测试分发到安装有不同浏览器和操作系统的远程机器或者云端执行。
+2020-10-25 22:25
+本章将学习如何在远程机器上执行测试，并且学习如何在由不同浏览器和操作系统组合成的分布式架构中的远程机器上批量执行跨浏览器测试。这种执行跨浏览器测试的实现方式将会节省大量的时间。本章包含以下主题：Selenium Standalone Server 的下载和使用；如何使用Remote 类来实现在Selenium Standalone Server 上执行测试；在Selenium Standalone Server上执行测试；为Seleni...
+第7章 移动端测试
+2020-10-25 22:26
+本章将讲解如何使用WebDriver和Appium来测试移动端应用程序。本章包含以下主题：如何使用Appium测试移动端应用；Appium的安装和配置；在iPhone模拟器上创建并运行iOS测试；在真机上创建并运行Android测试。
+2020-10-25 22:26
+7.1　认识Appium
+2020-10-25 22:26
+识AppiumAppium是一个开源的自动化测试框架，可以用来测试基于iOS、Android和Firefox OS 平台的原生与混合的应用。该框架使用Selenium WebDriver，在执行测试时用于和Selenium Server 通信的是JSON Wire Protocol。
+2020-10-25 22:27
+Appium允许我们使用，甚至扩展现有的Selenium WebDriver 框架来构建测试脚本。由于Appium是通过Selenium WebDriver 来驱动测试脚本的，因此只要有对应的Selenium client library存在，就可以使用相应的语言来创建测试脚本。下图是Appium对不同平台和应用类型的支持情况的覆盖地图。
+2020-10-25 22:27
+7.1.1　Appium支持的应用类型
+2020-10-25 22:27
+Appium 支持以下应用类型的测试。原生应用。原生应用是指适用于特定平台的，即使用该平台所支持的语言和框架来构建的。例如，iPhone和iPad上面的应用都是使用Objective-C和iOS SDK 来开发的；同样，Android 应用是使用Java和Android SDK来开发的。在程序运行的时候，原生应用会更加流畅和稳定。它们是使用原生框架来构建用户交互界面。
+2020-10-25 22:27
+移动端Web应用。移动端Web应用是服务端应用，是使用PHP、Java或者ASP.NET这样的服务端技术来构建的，并且使用jQuery Mobile、Sencha Touch 等一些技术渲染用户页面以模拟本地UI。
+2020-10-25 22:27
+混合应用。类似于原生应用程序，混合应用是运行在移动设备上并且通过一些互联网技术（HTML5、CSS和JavaScript）来实现的。混合应用使用移动设备的浏览器引擎来渲染HTML页面，并且通过使用WebView在本地容器中处理JavaScript脚本。这种处理方式可以使混合应用具备访问一些移动Web应用不能访问的设备（比如相机、加速计、传感器和本地存储器）的能力。
+2020-10-25 22:28
+7.1.2　Appium环境准备
+2020-10-25 22:28
+Appium是基于Node.js实现的，在Mac OS X和Windows平台上都有对应的Standalone GUI的Node.js 包。
+2020-10-25 22:28
+7.1.2.1　安装Xcode
+2020-10-25 22:28
+我们需要在Mac OS X系统上使用Xcode 4.6.3或者更高的版本，来测试iOS平台下的应用。
+2020-10-25 22:28
+7.1.2.2　安装Android SDK
+2020-10-25 22:28
+我们需要安装Android SDK来测试Android应用。从以下网址可以获取最新版本的Android SDK：http://developer.android.com/sdk/。安装完成以后，确保ANDROID_HOME已经成功添加到环境变量的path中。
+2020-10-25 22:29
+完整安装步骤参考：http://developer.android.com/sdk/installing/index.html?pkg=tools。
+2020-10-25 22:29
+7.1.2.3　安装Appium Python client
+2020-10-25 22:29
+可以通过以下命令来安装Appium Python client。pip install Appium-Python-Client 可以访问以下网址查看更多关于Appium Python client 安装包的信息：https://pypi.python.org/pypi/Appium-Python-Client。
+2020-10-25 22:29
+7.2　安装Appium
+2020-10-25 22:30
+如果是测试Android应用程序，需要在装有Windows或者Linux系统的机器上安装Appium。
+2020-10-25 22:30
+Inspector元素定位器：Appium的元素定位工具叫Appium Inspector，可以通过在Appium主界面单击放大镜的图标来启动它。该定位器提供了定位被测应用的多种分析方式。其中主要的特性就是告诉我们这些UI元素在移动应用程序中是如何被使用的，包括它们的层次结构以及元素的属性，通过这些我们可以设置元素的定位器。它也可以模拟应用程序上的各种操作手势，并看到在模拟器上执行的效果。它还能够记录下用户在移动应用上的操作步骤。
+2020-10-25 22:30
+7.3　iOS测试
+2020-10-25 22:31
+7.4　Android测试
+2020-10-25 22:31
+Appium对于Android应用程序的测试是通过调用内置在Android SDK中的 UI Automator来实现的。过程非常类似于基于iOS平台的测试。Appium 作为一个HTTP Server来接收测试脚本通过JSON Wire Protocol传输过来的指令。Appium发送这些指令给UI Automator。这样，这些指令就可以在启动了被测应用的模拟器或者真机上执行测试。这个过程中，Appium把JSON指令翻译成UI A...
+2020-10-25 22:32
+当在模拟器或者真机的应用程序上执行测试指令的时候，被测应用程序会发送响应给UI Automator，然后返回给Appium。Appium再把UI Automator响应翻译成符合Selenium WebDriver JSON Wire Protocol的响应信息，并把它返回给测试脚本。
+2020-10-25 22:32
+一般在Android平台，我们会使用真机来取代模拟器（与iOS平台的simulator不同，在Android社区被称为emulator）。下面将使用同样的程序来测试Android平台下的Chrome浏览器。
+2020-10-25 22:32
+我们是在Android真机上执行测试脚本的，首先要确保手机已经成功安装了Chrome浏览器并且成功连接到电脑上了。运行下面的命令可以获取连接到电脑上的虚拟机和真机的列表。./adb devicesAndroid Debug Bridge(adb) 是内置在Android SDK中的命令行工具，通过它可以与模拟器实例或者真机进行通信。上面的命令可以获取到已经连接到主机上的Android设备列表。如
+2020-10-25 22:33
+我们可以修改前面为iOS测试写过的脚本，使其能够在Android平台运行。创建一个新的测试类SearchProductsOnAndroid。复制下面的代码到新创建的测试类中。
+2020-10-25 22:33
+import unittest from appium import webdriver class SearchProductsOnAndroid(unittest.TestCase): 　　def setUp(self): 　　　　desired_caps = {} 　　　　# platform 　　　　desired_caps['device'] = 'Android' 　　　　# platform version 　　　　des...
+2020-10-25 22:33
+　webdriver.Remote("http://127.0.0.1:4723/wd/hub", desired_caps) 　　　　self.driver.get("http://demo.magentocommerce.com/") 　　　　self.driver.implicitly_wait(30) 　　def test_search_by_category(self): 　　　　# click on search icon ...
+2020-10-25 22:33
+　self.search_field.clear() 　　　　# enter search keyword and submit 　　　　self.search_field.send_keys("phones") 　　　　self.search_field.submit() 　　　　# get all the anchor elements which have product names 　　　　# displayed current...
+2020-10-25 22:33
+category-products']/ul/li") 　　　　# check count of products shown in results 　　　　self.assertEqual(2, len(products)) 　　def tearDown(self): 　　　　# close the browser window 　　　　self.driver.quit() if __name__ == '__main__': 　　u...
+2020-10-25 22:33
+在该实例中，我们给desired_caps['device']指定的值是Android，表明将会在Android平台上运行测试。接下来，可以看到desired_caps['version']设置的是Android 4.3版本（Jelly Bean）。需要在Android系统的Chrome浏览器上执行测试，因此desired_caps['app']设置的值是Chrome。
+2020-10-25 22:33
+Appium将会调用通过adb返回的设备列表中的第一个来运行测试，并通过前面提到的配置，来实现在目标设备上启动Chrome浏览器，然后开始执行测试脚本，如下图所示。
+2020-10-25 22:34
+7.5　使用Sauce Labs
+2020-10-25 22:34
+Sauce也支持通过Appium来测试移动端应用程序。事实上，Appium本身就是由Sauce Labs来开发和支持的项目。通过非常小的配置修改，就可以在Sauce Labs上运行移动端的测试脚本，代码如下。
+2020-10-25 22:34
+import unittest from appium import webdriver class SearchProductsOnIPhone(unittest.TestCase): 　　SAUCE_USERNAME = 'upgundecha' 　　SUACE_KEY = 'c6e7132c-ae27-4217-b6fa-3cf7df0a7281' 　　def setUp(self): 　　　　desired_caps = {} ...
+2020-10-25 22:34
+　sauce_string = self.SAUCE_USERNAME + ':' + self.SUACE_KEY 　　　　self.driver = \ 　　　　　　webdriver.Remote('http://' + sauce_string + 　　　　　　'@ondemand.saucelabs.com:80/wd/hub', desired_caps) 　　　　self.driver.get('http://demo.m...
+2020-10-25 22:34
+element_by_xpath("//a[@href= 　　　　'#header-search']").click() 　　　　# get the search textbox 　　　　self.search_field = self.driver.find_element_by_name("q") 　　　　self.search_field.clear() 　　　　# enter search keyword and submit ...
+2020-10-25 22:34
+result page using 　　　　# find_elements_by_xpath method 　　　　products = self.driver\ 　　　　　　.find_elements_by_xpath 　　　　　　 ("//div[@class='category-products']/ul/li") 　　　　# check count of products shown in results 　　　　self.a...
+2020-10-25 22:34
+当执行完移动端测试以后，可以在Sauce Labs的面板上看到运行的结果和录像回放。Sauce Labs上有很多现成的SDK的组合和设置，在Sauce Labs执行测试可以节省大量用在本地环境配置Appium的时间和精力。
+第8章 Page Object与数据驱动测试
+2020-10-25 22:35
+第8章 Page Object与数据驱动测试
+2020-10-25 22:35
+本章将介绍两类重要的设计模式，这些设计模式有助于提升我们自动化测试框架的可扩展性与可维护性。我们将一起学习如何用数据驱动的模式结合Python库去构建Selenium测试脚本。在本章的第二部分，我们还将学习用Page Object的模式创建高可维护与健壮性的测试脚本。将元素定位器和底层调用从测试脚本中分离出来形成抽象层，如同实现应用程序的各个功能（就像用户在浏览器窗口中体验到的内容一样）。
+2020-10-25 22:35
+本章包含以下主题：什么是数据驱动测试；如何用数据驱动的模式（ddt）库结合unittest库构建数据驱动测试；什么是Page Object模式以及如何使用该模式创建维护性好的测试；结合测试样例实现一个Page Object模式的测试。
+第9章 Selenium WebDriver的高级特性
+2020-10-25 22:38
+9.1　键盘与鼠标事件
+2020-10-25 22:38
+WebDriver高级应用的API，允许我们模拟简单到复杂的键盘和鼠标事件，如拖拽操作、快捷键组合、长按以及鼠标右键操作。这些都是通过使用WebDriver的Python API中ActionChains类实现的。
+2020-10-25 22:39
+方法描述参数样例click(on_element=None)单击元素操作on_element:指被单击的元素。如果该参数为None，将单击当前鼠标位置click(main_link)
+2020-10-25 22:39
+click_and_hold(on_element=None)对元素按住鼠标左键on_element:指被单击且按住鼠标左键的元素。如果该参数为None，将单击当前鼠标位置click_and_hold(gmail_link)
+2020-10-25 22:39
+double_click(on_element=None)双击元素操作on_element:指被双击的元素。如果该参数为None，将双击当前鼠标位置double_click(info_box)
+2020-10-25 22:40
+drag_and_drop(source, target)鼠标拖动source:鼠标拖动的源元素。target:鼠标释放的目标元素drag_and_drop(img, canvas)key_down(value, element=None)仅按下某个键，而不释放。这个方法用于修饰键（如Ctrl、Alt与Shift键）key:指修饰键。Key的值在Keys类中定义。target：按键触发的目标元素，如果为None，则按键在当前鼠标聚焦的元...
+2020-10-25 22:41
+key_up(value, element=None)用于释放修饰键key:指修饰键。Key的值在Keys类中定义。target：按键触发的目标元素，如果为None，则按键在当前鼠标聚焦的元素上触发move_to_element(to_element)将鼠标移动至指定元素的中央to_element:指定的元素move_to_element(gmail_link)perform()提交（重放）已保存的动作perform()release(...
+2020-10-25 22:41
+send_keys(keys_to_send)对当前焦点元素的键盘操作keys_to_send:键盘的输入值send_keys(“hello”)send_keys_to_element(element, keys_to_send)对指定元素的键盘操作element:指定的元素。keys_to_send:键盘的输入值send_keys_to_element(firstName, “John”)
+2020-10-25 22:41
+获取更多细节可访问http://selenium.googlecode.com/git/docs/api/py/webdriver/selenium. webdriver.common.action_chains.html。
+2020-10-25 22:41
+9.1.1　键盘事件
+2020-10-25 22:42
+这个简单的场景中，当我们按下Shift+N组合键时，label标签会改变颜色。代码如下。from selenium import webdriver from selenium.webdriver.common.by import By from selenium.webdriver.support.ui import WebDriverWait from selenium.webdriver.support import expec...
+2020-10-25 22:42
+　self.driver.get(self.URL) 　　　　self.driver.implicitly_wait(30) 　　　　self.driver.maximize_window() 　　def test_hotkey(self): 　　　　driver = self.driver 　　　　shift_n_label = WebDriverWait(self.driver, 10).\ 　　　　　　until(expe...
+2020-10-25 22:42
+通过使用ActionChains类，我们可以实现组合键操作。在上面的示例中，我们联合key_down()、send_key()与key_up()三个方法模拟真人操作Shift+N组合键。
+2020-10-25 22:42
+ActionChains(driver).\ 　　key_down(Keys.SHIFT).\ 　　send_keys('n').\ 　　key_up(Keys.SHIFT).perform()当调用ActionChains类的方法时，它不会立即执行，而是会将所有的操作按顺序存放在一个队列里，当调用perform()方法时，队列中的事件会依次执行。
+2020-10-25 22:42
+9.1.2　鼠标事件
+2020-10-25 22:42
+下面演示一个调用ActionChains类中的move_to_element()方法实现鼠标移动的示例。这个方法类似于onMouseOver事件。move_to_element()方法是将光标从当前位置移动到指定的元素。
+2020-10-25 22:42
+from selenium import webdriver from selenium.webdriver.common.by import By from selenium.webdriver.support.ui import WebDriverWait from selenium.webdriver.support import expected_conditions from selenium.webdriver.commo...
+2020-10-25 22:43
+http://jqueryui.com/tooltip/") 　　　　self.driver.implicitly_wait(30) 　　　　self.driver.maximize_window() 　　def test_tool_tip(self): 　　　　driver = self.driver 　　　　frame_elm = driver.find_element_by_class_name("demo-frame") ...
+2020-10-25 22:43
+10)\ 　　　　　　.until(expected_conditions.visibility_of_element_ 　　　　　　located((By.CLASS_NAME, "ui-tooltip-content"))) 　　　　# verify tooltip message 　　　　self.assertEqual("We ask for your age only for statistical 　　　　purpose...
+2020-10-25 22:43
+9.1.2.1　双击操作
+2020-10-25 22:43
+调用ActionChains类中的double_click()方法实现鼠标对元素的双击操作，代码如下。
+2020-10-25 22:43
+from selenium import webdriver from selenium.webdriver.common.action_chains import ActionChains import unittest class DoubleClickTest (unittest.TestCase): 　　URL = "http://api.jquery.com/dblclick/" 　　def setUp(self): 　　...
+2020-10-25 22:43
+　def test_double_click(self): 　　　　driver = self.driver 　　　　frame = driver.find_element_by_tag_name("iframe") 　　　　driver.switch_to.frame(frame) 　　　　box = driver.find_element_by_tag_name("div") 　　　　# verify color is Blue...
+2020-10-25 22:43
+\.perform() 　　　　ActionChains(driver).double_click(box).perform() 　　　　# verify Color is Yellow 　　　　self.assertEqual("rgba(255, 255, 0, 1)", 　　　　　　　　　　　　 box.value_of_css_property("background-color")) 　　def tearDown(self)...
+2020-10-25 22:43
+9.1.2.2　鼠标拖动
+2020-10-25 22:43
+调用ActionChains类中的drag_and_drop()方法实现鼠标的拖放操作。这个方法拖动源元素，然后在目标元素的位置释放源元素。示例如下。
+2020-10-25 22:44
+from selenium import webdriver from selenium.webdriver.common.action_chains import ActionChains import unittest class DragAndDropTest (unittest.TestCase): 　　URL = "http://jqueryui.com/resources/ 　　　　　 demos/droppable/d...
+2020-10-25 22:44
+　self.driver.maximize_window(30) 　　　　self.driver.maximize_window() 　　def test_drag_and_drop(self): 　　　　driver = self.driver 　　　　source = driver.find_element_by_id("draggable") 　　　　target = driver.find_element_by_id("d...
+2020-10-25 22:44
+9.2　调用JavaScript
+2020-10-25 22:44
+在执行某些特殊操作或测试JavaScript代码时，WebDriver还提供了调用JavaScript的方法。WebDriver类包含的相关方法见下表。方　　法描　　述参　　数示　　例
+2020-10-25 22:44
+execute_async_script(script, *args)异步执行JS代码script:被执行的JS代码。 args:JS代码中的任意参数driver.execute_async_script("return document.title")execute_ script(script, *args)同步执行JS代码script:被执行的JS代码。 args:JS代码中的任意参数driver.execute_ script(...
+2020-10-25 22:44
+接下来创建的测试用到了工具方法，该工具方法在使用JavaScript方法对元素执行操作之前，先对它们进行高亮显示。
+2020-10-25 22:44
+from selenium import webdriver import unittest class ExecuteJavaScriptTest (unittest.TestCase): 　　def setUp(self): 　　　　# create a new Firefox session 　　　　self.driver = webdriver.Firefox() 　　　　self.driver.implicitly_w...
+2020-10-25 22:45
+http://demo.magentocommerce.com/") 　　def test_search_by_category(self): 　　　　# get the search textbox 　　　　search_field = self.driver.find_element_by_name("q") 　　　　self.highlightElement(search_field) 　　　　search_field.cle...
+2020-10-25 22:45
+　　# get all the anchor elements which have product names 　　　　# displayed currently on result page using 　　　　# find_elements_by_xpath method 　　　　products = self.driver.find_elements_by_xpath("//h2[@ class='product-name']/...
+2020-10-25 22:45
+self, element): 　　　　self.driver.execute_script("arguments[0].setAttribute('style', 　　　　arguments[1]);", 　　　　element, "color: green; 　　　　border: 2px solid green;") 　　　　self.driver.execute_script("arguments[0].setAttrib...
+2020-10-25 22:45
+我们可以通过调用WebDriver类的execute_script方法来执行JavaScript代码，也可以通过这个方法传递参数给JavaScript代码，示例代码如下。在这个例子中，我们修改了边框样式，然后又立即恢复到原来的样子。在执行期间，元素将以绿色边框高亮显示，这对于了解哪一个步骤正在执行是非常有用的。
+2020-10-25 22:45
+def highlightElement(self, element): 　　　self.driver.execute_script("arguments[0].setAttribute('style', 　　　arguments[1]);", 　　　element, "color: green; border: 2px solid green;") 　　　self.driver.execute_script("arguments[...
+2020-10-25 22:45
+9.3　屏幕截图
+2020-10-25 22:45
+WebDriver内置了一些在测试执行过程中捕获屏幕并保存的方法，如下表所示。方　　法描　　述参　　数示　　例
+2020-10-25 22:46
+save_ screenshot(filename)获取当前屏幕截图并保存为指定文件filename：指定保存的路径/图片文件名Driver.save_ screenshot ("homepage.png")get_screenshot_as_base64()获取当前屏幕截图base64编码字符串（用于HTML页面直接嵌入base64编码图片）driver.get_screenshot_as_base64(
+2020-10-25 22:46
+get_screenshot_as_file(filename)获取当前的屏幕截图，使用完整的路径。如果有任何IOError，返回False，否则返回Truefilename：指定保存的路径/图片文件名driver.get_ screenshot_as_file('/results/ screenshots/ HomePage.png')
+2020-10-25 22:46
+get_screenshot_as_png()获取当前屏幕截图的二进制文件数据driver.get_screenshot_as_png()
+2020-10-25 22:46
+接下来，我们通过屏幕截图来捕获一个测试执行出错的场景。场景中，我们定位一个本来应该显示在主页的元素。如果测试脚本没有发现对应元素，则立即抛出NoSuchElement Exception异常，同时截取当前浏览器窗口截图，我们可以把它作为bug的依据发给开发人员定位问题。
+2020-10-25 22:46
+from selenium import webdriver import datetime, time, unittest from selenium.common.exceptions import NoSuchElementException class ScreenShotTest(unittest.TestCase): 　　def setUp(self): 　　　　self.driver = webdriver.Fire...
+2020-10-25 22:46
+"promo_ banner") 　　　　　　self.assertEqual("Promotions", promo_banner_elem.text) 　　　　except NoSuchElementException: 　　　　　　st = datetime.datetime\ 　　　　　　　　.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S') 　　　　　　file_na...
+2020-10-25 22:47
+在上述代码中，当测试脚本找不到“promo_banner”元素时，程序就调用save_screenshot()方法来自动截屏，并以我们定义的图片文件名保存在指定的路径下。
+2020-10-25 22:47
+try: 　　promo_banner_elem = driver.find_element_by_id("promo_banner") 　　self.assertEqual("Promotions", promo_banner_elem.text) except NoSuchElementException: 　　st = datetime.datetime.fromtimestamp(time.time()). strftime(...
+2020-10-25 22:47
+当我们使用上述截屏方法时，推荐使用包含唯一标识（例如时间戳）的名称，并且保存为PNG图片等高压缩图片格式，来控制图片的大小。
+2020-10-25 22:47
+9.4　屏幕录制
+2020-10-25 22:47
+Selenium WebDriver没有内置录制的功能，所以要依赖Python类库中名为Castro的工具。这是由Selenium创始人Jason Huggin设计的。Castro是基于跨平台屏幕录制工具Pyvnc2swf开发的。它使用VNC协议录制屏幕并生成SWF视频文件。
+2020-10-25 22:47
+由于符合VNC协议，所以我们还可以实现对远程机器（预装VNC相关程序包）的屏幕录制。先安装PyGame，然后安装Castro，pip命令如下。pip install Castro如果Server和Viewer端都是Windows的环境，我们可以选择安装TightVNC工具。
+2020-10-25 22:47
+结合之前章节我们设计过的测试脚本，添加屏幕录制功能，代码如下。import unittest from selenium import webdriver from castro import Castro class SearchProductTest(unittest.TestCase): 　　def setUp(self): 　　　　# create an instance of Castro and provide name...
+2020-10-25 22:48
+　self.driver.get("http://demo.magentocommerce.com/") 　　def test_search_by_category(self): 　　　　# get the search textbox 　　　　search_field = self.driver.find_element_by_name("q") 　　　　search_field.clear() 　　　　# enter search...
+2020-10-25 22:48
+result page using find_elements_by_xpath method 　　　　products = self.driver.find_elements_by_xpath("//h2[@ 　　　　class='product-name']/a") 　　　　# check count of products shown in results 　　　　self.assertEqual(2, len(product...
+2020-10-25 22:48
+从代码中可以看到，要创建一个录制屏幕的会话，我们需要创建一个Castro对象并且使用录像文件的路径和名称作为参数初始化实例。start()和stop()方法用于控制屏幕录制的起止位。代码中setUp()方法的部分就是一个最佳的初始化Castro实例，并且是开始录制的示例。
+2020-10-25 22:48
+def setUp(self): 　　# Create an instance of Castro and provide name for the output 　　# file 　　self.screenCapture = Castro(filename="testSearchByCategory.swf") 　　# Start the recording of movie 　　self.screenCapture.start()...
+2020-10-25 22:48
+在teadDown()部分，我们可以看到当完整的测试用例都执行完成后，调用stop()方法来停止屏幕录制。代码如下。def tearDown(self): 　　# close the browser window 　　self.driver.quit() 　　# Stop the recording 　　self.screenCapture.stop()
+2020-10-25 22:48
+特别是在组合多个测试场景的测试类中，我们同样也可用上述setUp() 和 tearDown()方法，来实现整个测试类的屏幕录制操作的开启与停止，无须对不同测试场景重复单独构建。
+2020-10-25 22:48
+9.5　弹出窗的处理
+2020-10-25 22:48
+弹出窗的处理过程包括：通过弹出窗的名称或句柄来定位，切换Driver Context至所需的弹出窗，在弹出窗上执行相关操作步骤，最后跳转回到上级窗口（页面）。
+2020-10-25 22:48
+结合我们的测试，创建一个基于浏览器的实例，基于父窗口随后弹出新的窗口，我们统称为子窗口或弹出窗。只要该弹出窗属于当前WebDriver Context，我们都可以对它进行操作。下图展示一个弹出窗的例子。
+2020-10-25 22:49
+创建一个新的测试类PopupWindowTest，其中包括test_popup_window()方法，代码如下。from selenium import webdriver import unittest class PopupWindowTest(unittest.TestCase): 　　URL = "https://rawgit.com/upgundecha/learnsewithpython/master/pages/Conf...
+2020-10-25 22:49
+　# save the WindowHandle of Parent Browser Window 　　　　parent_window_id = driver.current_window_handle 　　　　# clicking Help Button will open Help Page in a new Popup 　　　　# Browser Window 　　　　help_button = driver.find_elem...
+2020-10-25 22:49
+if __name__ == "__main__": 　　unittest.main(verbosity=2)
+2020-10-25 22:49
+在Context调用弹出窗口显示之前，我们先通过current_window_handle属性将父窗口的句柄信息保存下来（稍后我们将使用这个信息从弹出窗返回到父窗口）。接着使用WebDriver下的switch_to.window()方法获取弹出窗的名称或句柄信息，切换到我们要操作的那个弹出窗（子窗口）。下面我们演示通过名称定位弹出窗。driver.switch_to_window("HelpWindow")
+2020-10-25 22:49
+我们操作完Help窗口之后，通过close()方法关闭窗口，并且返回至父窗口，代码如下。driver.close() # switch back to Home page window using the handle driver.switch_to_window(default_window)
+2020-10-25 22:49
+9.6　操作cookies
+2020-10-25 22:49
+WebDriver提供了一组操作cookies的方法，包括读取、添加和删除cookies信息。这些方法可以帮助我们操作cookies，来校验Web应用程序对应的响应。具体方法见下表。
+2020-10-25 22:49
+方　　法描　　述参　　数示　　例add_ cookie(cookie_dict)在当前会话中添加cookie信息cookie_ dict:字典对象，包含name与value值driver.add_ cookie({"foo","bar"})
+2020-10-25 22:49
+delete_all_cookies()在当前会话中删除所有cookie信息driver.delete_all_cookies()delete_cookie(name)删除单个名为name的cookie信息name:要删除的cookie的名称driver.delete_cookie("foo")
+2020-10-25 22:50
+get_cookie(name)返回单个名为name的cookie信息。如果没有找到，返回nonename:要查找的cookie的名称driver.get_ cookie("foo")get_cookies()返回当前会话所有的cookie信息driver.get_cookies()
+2020-10-25 22:50
+接下的例子，我们来验证用户在首页选择语言后，是否被正确保存至cookie中。import unittest from selenium import webdriver
+2020-10-25 22:50
+from selenium.webdriver.support.ui import Select class CookiesTest(unittest.TestCase): 　　def setUp(self): 　　　　# create a new Firefox session 　　　　self.driver = webdriver.Firefox() 　　　　self.driver.implicitly_wait(30) ...
+2020-10-25 22:50
+　driver = self.driver 　　　　# get the Your language dropdown as instance of Select class 　　　　select_language = \ 　　　　　　Select(self.driver.find_element_by_id("select-language")) 　　　　# check default selected option is Engli...
+2020-10-25 22:50
+text 　　　　select_language.select_by_visible_text("French") 　　　　# store cookie should be populated with selected country 　　　　store_cookie = driver.get_cookie("store")['value'] 　　　　self.assertEqual("french", store_cookie...
+2020-10-25 22:50
+上述代码中，我们传递一个cookie的名称，就可以通过get_cookie()方法获取到对应cookie的值。
+第10章 第三方工具与框架集成
+2020-10-25 22:51
+第10章 第三方工具与框架集成
+2020-10-25 22:51
+除了unittest之外，Selenium WebDriver还可以集成很多其他的工具和框架。目前已经有很多基于Selenium WebDriver 实现的框架了。我们可以通过使Selenium WebDriver与现有的支持BDD（行为驱动开发）的框架结合起来，在自动化测试项目中实现BDD。还可以将Selenium Python API与持续集成（CI）工具、构建工具相集成，一旦应用程序开发完成就可以立即执行测试。这可以使开发人员对应...
+2020-10-25 22:51
+本章包含以下一些主要集成的实例：下载和安装Behave；使用Behave编写feature；使用Behave和Selenium WebDriver自动化验证feature；下载和安装Jenkins；搭建Jenkins运行Selenium测试；配置Jenkins捕捉测试结果。
+当当云阅读笔记 来自当当云阅读 for Android
+--dangdangbookid1900782998 for Android

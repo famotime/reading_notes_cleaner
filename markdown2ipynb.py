@@ -1,10 +1,12 @@
 '''
-Markdown文档转为Jupyter的ipynb文件
+批量转换Markdown文档为Jupyter Notebook(.ipynb文件)
 '''
 import pathlib
 
 
-def md2ipynb(md_file, ipynb_file):
+def md2ipynb(md_file):
+    """转换markdown文件为ipynb文件"""
+    ipynb_file = md_file.with_suffix('.ipynb')
     # 注意文件编码格式
     with open(md_file, 'r', encoding='utf-8-sig') as f1:
         with open(ipynb_file, 'w', encoding='utf-8') as f2:
@@ -90,7 +92,7 @@ def md2ipynb(md_file, ipynb_file):
 
 
 if __name__ == "__main__":
-    md_file = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\data_analysis\可视化\Python数据可视化之matplotlib精进\《Python数据可视化之matplotlib精进》读书摘录.md')
+    folder = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\data_analysis\可视化\Python数据可视化之matplotlib精进')
 
-    ipynb_file = md_file.with_suffix('.ipynb')
-    md2ipynb(md_file, ipynb_file)
+    for md_file in folder.glob('*.md'):
+        md2ipynb(md_file)

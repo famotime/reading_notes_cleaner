@@ -1,7 +1,14 @@
+# customize
+fullnotes.txt
+draftnotes.txt
+unrelease/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.txt
+*.md
 
 # C extensions
 *.so
@@ -26,6 +33,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.ipynb
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
