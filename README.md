@@ -16,7 +16,7 @@
 
 ## 主要功能
 
-### 1. 自动补全、清理、格式化当当云阅读等App导出的读书笔记，生成Markdown文件
+### 自动补全、清理、格式化当当云阅读等App导出的读书笔记，生成Markdown文件
 
 - **readnotes2markdown.py:** 当当云阅读App导出笔记整理成Markdown文档
   1. 在当当云阅读App中将读书笔记导出到印象笔记，从印象笔记中拷贝文本到'draftnotes.txt'文本文件；
@@ -39,8 +39,12 @@
 - **extract_descriptions.py:** 提取指定目录下python脚本描述内容，生成脚本概览(markdown文件)
 
 
+### 批量转换Jupyter notebook(.ipynb文件)为Markdown文档
+- **ipynb2markdown.py:** 批量转换Jupyter notebook(.ipynb文件)为Markdown文档
+我知道Jupyter Notebook有个nbconvert工具，但在我这里运行报错，就自己写了一个。功能单一，但方便定制。
 
-### 2. Markdown笔记转换为opml文件，可以直接粘贴到Workflowy、幕布等大纲笔记软件
+
+### Markdown笔记转换为opml文件，可以直接粘贴到Workflowy、幕布等大纲笔记软件
 
 - **markdown2opml.py:** Markdown文档批量转为workflowy、幕布等导图软件支持的opml文件（带层次结构）; Markdown文件须以标题行开头（# XX）; 所有标题行作为清单项，非标题行作为备注
 
@@ -49,14 +53,16 @@
   | ![image-20201017145348778](./image/image-20201017145348778.png) | ![image-20201017145443566](./image/image-20201017145443566.png) |
 
 
-
 - **markdown2opml_clipboard.py:** 拷贝到剪贴板的Markdown文档内容转为workflowy支持的opml文件内容（带层次结构）; 所有标题行（#...）作为清单项，非标题行作为备注
 
 - **mubu2workflowy_opml.py:** 把幕布软件导出的opml文件转换成可在workflowy直接粘贴的格式
 
 
+### 转换剪贴板中html源码内容为opml大纲笔记内容，可以直接粘贴到Workflowy、幕布等大纲笔记软件
+- **html2opml_clipboard.py:** 转换剪贴板中html源码内容为opml大纲笔记内容
 
-### 3. Markdown笔记转换为ipynb文件，可以用Jupyter Notebook打开后编辑、运行其中代码段落
+
+### Markdown笔记转换为ipynb文件，可以用Jupyter Notebook打开后编辑、运行其中代码段落
 
 - **markdown2ipynb.py:** Markdown文档转为Jupyter的ipynb文件
 
@@ -66,3 +72,9 @@
 
 
 
+
+## 相关模块版本
+```
+python 3.7
+pyperclip 1.8.0
+```
