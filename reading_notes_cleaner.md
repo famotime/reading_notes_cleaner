@@ -1,6 +1,8 @@
 # reading_notes_cleaner
 - **code_cleaner_clipboard.py:** 每隔2秒自动整理剪贴的python代码，并保存到系统剪贴板
 - **extract_descriptions.py:** 提取指定目录下python脚本描述内容，生成脚本概览(markdown文件)
+- **html2opml_clipboard.py:** 转换剪贴板中html源码内容为opml大纲笔记内容
+- **ipynb2markdown.py:** 批量转换Jupyter notebook(.ipynb文件)为Markdown文档
 - **markdown2ipynb.py:** 批量转换Markdown文档为Jupyter Notebook(.ipynb文件)
 - **markdown2opml.py:** Markdown文档批量转为workflowy、幕布等导图软件支持的opml文件（带层次结构）; Markdown文件应以标题行开头（# XX）; 所有标题行作为清单项，非标题行作为备注
 - **markdown2opml_clipboard.py:** 拷贝到剪贴板的Markdown文档内容转为workflowy支持的opml文件内容（带层次结构）; 所有标题行（#...）作为清单项，非标题行作为备注
