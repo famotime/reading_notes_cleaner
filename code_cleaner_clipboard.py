@@ -42,7 +42,7 @@ def remove_linenum(codes):
 
 def remove_presign(codes):
     """去除交互式编程环境的前导符号>>>"""
-    tidy_code = re.sub(r'>>> ?', '\n>>> ', codes)
+    tidy_code = re.sub(r'>>> ?', '\n', codes)
     tidy_code = re.sub(r'\n\n', '\n', tidy_code)
     return tidy_code
 
@@ -65,8 +65,10 @@ if __name__ == "__main__":
             tidy_code = pyperclip.paste()
 
             # 处理剪贴板代码
-            # tidy_code = remove_linenum(tidy_code)
-            tidy_code = python3_print(tidy_code)
+            # functions = [python3_print, add_newline, linenum2newline, remove_linenum, remove_presign]
+            functions = [remove_presign]
+            for function in functions:
+                tidy_code = function(tidy_code)
 
             # 整理后文本拷贝到系统剪贴板
             pyperclip.copy(tidy_code)
