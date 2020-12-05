@@ -1,7 +1,7 @@
 # customize
+unrelease/
 fullnotes.txt
 draftnotes.txt
-unrelease/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -131,3 +131,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+draftnotes.txt
+fullnotes.txt
