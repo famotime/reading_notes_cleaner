@@ -2,7 +2,7 @@
 
 ## 楔子
 
-我在当当云阅读充值了10年会员，书城里我感兴趣且可以免费阅读的书倒是挺多的，这辈子肯定看不完了。但是当当云阅读App相比多看阅读、微信读书有个很大的弊端——笔记导出功能受限：
+我在当当云阅读充值了10年会员，书城里我感兴趣且可以免费阅读的书挺多的，下辈子也看不完了。但是当当云阅读App相比多看阅读、微信读书有个很大的弊端——笔记导出功能受限：
 
 1. 笔记划线不能超出两页，大段内容只能分页标注；
 2. 导出的笔记不完整，单条笔记内容超过230个字符就会被直接截断，用...代替（英文、数字字符也计算在内，因此大多数代码段落都会超出）；
@@ -37,11 +37,22 @@
 - **remove_noncode_emptylines.py:** 删除文本文件中非代码区域的所有空行
 - **remove_emptylines_clipboard.py:** 删除剪贴板文本中所有空行
 - **extract_descriptions.py:** 提取指定目录下python脚本描述内容，生成脚本概览(markdown文件)
+- **textnotes2markdown_clipboard.py:** 将剪贴板的原始笔记文本规范为markdown格式，再贴回到剪贴板
+
+
+
+### 每日金句（随机笔记）
+
+- **random_notes2mail.py:** 随机抽取markdown笔记文件，并从中随机挑选句子，发送到邮件
+
 
 
 ### 批量转换Jupyter notebook(.ipynb文件)为Markdown文档
+
 - **ipynb2markdown.py:** 批量转换Jupyter notebook(.ipynb文件)为Markdown文档
+
 我知道Jupyter Notebook有个nbconvert工具，但在我这里运行报错，就自己写了一个。功能单一，但方便定制。
+
 
 
 ### Markdown笔记转换为opml文件，可以直接粘贴到Workflowy、幕布等大纲笔记软件
@@ -54,12 +65,15 @@
 
 
 - **markdown2opml_clipboard.py:** 拷贝到剪贴板的Markdown文档内容转为workflowy支持的opml文件内容（带层次结构）; 所有标题行（#...）作为清单项，非标题行作为备注
-
 - **mubu2workflowy_opml.py:** 把幕布软件导出的opml文件转换成可在workflowy直接粘贴的格式
+
+
 
 
 ### 转换剪贴板中html源码内容为opml大纲笔记内容，可以直接粘贴到Workflowy、幕布等大纲笔记软件
 - **html2opml_clipboard.py:** 转换剪贴板中html源码内容为opml大纲笔记内容
+
+
 
 
 ### Markdown笔记转换为ipynb文件，可以用Jupyter Notebook打开后编辑、运行其中代码段落
@@ -75,6 +89,7 @@
 
 ## 相关模块版本
 ```
-python 3.7
+python 3.8
 pyperclip 1.8.0
+
 ```
