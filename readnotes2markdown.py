@@ -108,7 +108,8 @@ def add_code_mark(cleannotes):
             code_flag = False
             for line in f1:
                 # 查询当前行是否包含中文字符
-                chinese_character = re.search('[\u4e00-\u9fa5]', line)  # \u4e00-\u9fa5为中文字符utf8编码
+                line_remove_string = re.sub(r"'.*?'|\".*?\"", '', line)
+                chinese_character = re.search('[\u4e00-\u9fa5]', line_remove_string)  # \u4e00-\u9fa5为中文字符utf8编码
                 # 查询IPython行标记
                 InOut = re.match(r'(In \[\d+\]: )|(Out\[\d+\]: )', line)
                 if not code_flag:
@@ -156,7 +157,7 @@ def split_code_line(cleannotes):
                     count += 1
 
                     # 相应关键词（包括缩进空格）前增加换行
-                    pre_keywords = ['from ', '(?<! )import ', 'for ', 'mpl\.', 'plt\.', 'assert ', 'break', 'continue', 'del ', 'else:', 'except ', 'finally:', 'global ', '(el)?if ', 'nonlocal ', 'pass', 'raise ', 'try:', 'while ', 'with ', r'p?print\(', 'def ', 'Traceback ', 'return ', 'yield ', 'class ', '# ', 'np.', r'\.\.\.', ' """.*?"""']
+                    pre_keywords = ['from ', '(?<! )import ', 'for ', 'mpl\.', 'plt\.', 'assert ', 'break', 'continue', 'del ', 'else:', 'except ', 'finally:', 'global ', '(el)?if ', 'nonlocal ', 'pass', 'raise ', 'try:', 'while ', 'with ', r'p?print\(', 'def ', 'Traceback ', 'return ', 'yield ', 'class ', '# ', 'np\.', r'\.\.\.', ' """.*?"""', 'conda', 'pip', 'sns', '\w*? = ']
                     for keyword in pre_keywords:
                         # new_word = '\n'+keyword.replace('\.', '.') if keyword.endswith('.') else '\n'+keyword
                         if re.search(keyword, line):
@@ -236,7 +237,7 @@ if __name__ == "__main__":
     # 最后再使用add_markdown_tag添加markdown标记
 
     # fn_list = [remove_timemark, add_markdown_tag]   # 针对普通笔记清洗策略
-    fn_list = [remove_timemark, add_code_mark, split_code_line, add_markdown_tag]   # 针对编程笔记清洗策略
+    fn_list = [remove_timemark, add_code_mark, split_code_line, add_code_mark, add_markdown_tag]   # 针对编程笔记清洗策略
     # fn_list = [remove_timemark, add_code_mark, split_code_line, remove_linenum, add_markdown_tag]   # 针对编程笔记清洗策略(清除代码行号)
     for fn in fn_list:
         tmpnotes = create_tmpnotes(cleannotes)
