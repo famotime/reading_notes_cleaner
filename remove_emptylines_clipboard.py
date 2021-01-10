@@ -10,7 +10,7 @@ while True:
     if text != pyperclip.paste():
         text = pyperclip.paste()
         # print(repr(text))
-        text = re.sub(r'(\r?\n){2,}', r'\n', text)
+        text = re.sub(r'\n\s*[\r\n]', r'\n', text)
 
         # 整理后文本拷贝到系统剪贴板
         pyperclip.copy(text)
