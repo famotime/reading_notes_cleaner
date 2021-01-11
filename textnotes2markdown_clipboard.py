@@ -45,7 +45,7 @@ while True:
                     line = ''
 
                 # 短内容作为小标题加粗显示
-                if line and (not line.startswith('#')) and len(line) < 20 and not line.endswith(('。', '?', '！', '；', '。”', '…', '，', '.', '?', ';', '"')):
+                if line and (not line.startswith('#')) and len(line) < 20 and not line.endswith(('。', '？', '！', '；', '”', '…', '，', '.', '?', ';', '"')):
                     line = "**" + line.strip() + "**"
                     count += 1
 
