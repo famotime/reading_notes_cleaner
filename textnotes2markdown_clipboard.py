@@ -29,7 +29,7 @@ while True:
                 line = re.sub(r'^\d\d\d\d-\d\d-\d\d.*', '', line)
 
                 # 以相关关键词开头行，添加markdown标记(章节标题)
-                if re.match(r'(第.{1,2}章)|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
+                if re.match(r'(第.{1,2}[章节篇讲])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
                     line = '## ' + line
                     count += 1
                 elif re.match(r'\d{1,2}[\.\-]\d{1,2}[\.\-]\d{1,2}', line):  # 形如：1.1.1，1-1-1；
@@ -46,7 +46,7 @@ while True:
 
                 # 短内容作为小标题加粗显示
                 if line and (not line.startswith('#')) and len(line) < 20 and not line.endswith(('。', '？', '！', '；', '”', '…', '，', '.', '?', ';', '"')):
-                    line = "**" + line.strip() + "**"
+                    line = "\n**" + line.strip() + "**"
                     count += 1
 
                 if line.strip('* \n'):
