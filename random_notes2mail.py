@@ -13,7 +13,7 @@ def select_random_notes(notes_path, select_file_num=5, select_note_num=1):
 
     for selected_file in selected_files:
         with open(selected_file, encoding='utf-8') as f:
-            lines = [line + f"-- 《{str(selected_file.stem).strip('《》').replace(' 》的笔记', '')}》\n" for line in f.readlines() if len(line) > 25 and not line.startswith('#') and not line.endswith('for Android') and not startswith('duokanbookid')]
+            lines = [line + f"—— 《{str(selected_file.stem).strip('《》').replace(' 》的笔记', '')}》\n" for line in f.readlines() if len(line) > 25 and not line.startswith('#') and not line.endswith('for Android') and not line.startswith('duokanbookid')]
             selected_lines = random.sample(lines, select_note_num)
             selected_notes += (selected_lines)
 
@@ -41,6 +41,6 @@ if __name__ == "__main__":
     mailhost, mailuser, mailpassword = read_mail_account(account_path, mailhost)
     date = time.strftime("%Y%m%d", time.localtime())
     yag_server = yagmail.SMTP(user=mailuser, password=mailpassword, host=mailhost)
-    yag_server.send(to=mailreceiver, subject=f'今日金句{date}', contents=[content])
+    yag_server.send(to=mailreceiver, subject=f'吉光片羽{date}', contents=[content])
     print(f'《吉光片羽{date}》邮件已发送。')
     yag_server.close()
