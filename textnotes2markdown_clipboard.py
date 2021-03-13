@@ -1,4 +1,4 @@
-"""将剪贴板的原始笔记文本规范为markdown格式，再贴回到剪贴板"""
+"""将剪贴板的原始笔记文本（从多看阅读、当当云阅读等app中导出）规范为markdown格式，再贴回到剪贴板"""
 import pyperclip
 import time
 import re
@@ -21,7 +21,7 @@ while True:
         last_line = ''
         new_lines = []
         for line in lines:
-            if line.strip('# ') != last_line.strip('# '):   # 删除前后相邻重复句子（如章节名称等）
+            if line.strip('# ').replace(' ', '') != last_line.strip('# ').replace(' ', ''):   # 删除前后相邻重复句子（如章节名称等）
                 if line.strip():
                     last_line = line
 
@@ -29,7 +29,7 @@ while True:
                 line = re.sub(r'^\d\d\d\d-\d\d-\d\d.*', '', line)
 
                 # 以相关关键词开头行，添加markdown标记(章节标题)
-                if re.match(r'(第.{1,2}[章节篇讲])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
+                if re.match(r'(第 ?.{1,2} ?[章节篇讲])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
                     line = '## ' + line
                     count += 1
                 elif re.match(r'\d{1,2}[\.\-]\d{1,2}[\.\-]\d{1,2}', line):  # 形如：1.1.1，1-1-1；
@@ -43,9 +43,8 @@ while True:
                     line = '\n---\n' + line
                 elif line.startswith('# 定义(粉红)假设(蓝色)分析(黄色)'):
                     line = ''
-
                 # 短内容作为小标题加粗显示
-                if line and (not line.startswith('#')) and len(line) < 20 and not line.endswith(('。', '？', '！', '；', '”', '…', '，', '.', '?', ';', '"')):
+                elif line and (not line.startswith('#')) and len(line) < 20 and not line.endswith(('。', '？', '！', '；', '”', '…', '，', '.', '?', ';', '"')):
                     line = "\n**" + line.strip() + "**"
                     count += 1
 

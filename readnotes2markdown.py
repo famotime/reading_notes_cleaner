@@ -66,12 +66,13 @@ def add_markdown_tag(cleannotes):
             count += 1
             last_line = ''
             for line in f1:
-                if line.strip('# ') != last_line.strip('# '):   # 删除前后相邻重复句子（如章节名称等）
+                if line.strip() and re.sub(r'[# \t\u3000]', '', line) != re.sub(r'[# \t\u3000]', '', last_line):   # 删除前后相邻重复句子（如章节名称等）
+                # if line.strip('# ').replace(' ', '') != last_line.strip('# ').replace(' ', ''):   # 删除前后相邻重复句子（如章节名称等）
                     if line.strip():
                         last_line = line
 
                     # 以相关关键词开头行，添加markdown标记(章节标题)
-                    if re.match(r'(第\d{1,2}章)|(前言\n)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
+                    if re.match(r'(第.{1,2}章)|(前言\n)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
                         line = '## ' + line
                         count += 1
                     elif re.match(r'\d{1,2}[\.\-]\d{1,2}[\.\-]\d{1,2}', line):  # 形如：1.1.1，1-1-1；

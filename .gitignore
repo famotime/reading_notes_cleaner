@@ -131,5 +131,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-draftnotes.txt
-fullnotes.txt

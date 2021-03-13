@@ -113,8 +113,8 @@ def md_file2opml_file(md_file):
 
 
 if __name__ == "__main__":
-    folder = pathlib.Path(r"C:\QMDownload\Python Programming\Python_Work\GitHub\joyful-pandas-master")
+    folder = pathlib.Path(r"C:\Users\Administrator\Desktop")
 
     for count, md_file in enumerate(folder.glob('*.md'), 1):
         md_file2opml_file(md_file)
-    print(f"已转换{count}个markdown文件，请到'{folder}'目录下查看。")
+    print(f"已转换{count}个markdown文件为opml文件，请到'{folder}'目录下查看。")

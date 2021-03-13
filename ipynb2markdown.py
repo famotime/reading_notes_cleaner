@@ -40,7 +40,7 @@ def ipynb2md(ipynb_file):
 
 
 if __name__ == "__main__":
-    folder = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\GitHub\joyful-pandas-master')
+    folder = pathlib.Path(r'C:\Users\Administrator\Desktop')
 
     for count, ipynb_file in enumerate(folder.glob('*.ipynb'), 1):
         ipynb2md(ipynb_file)

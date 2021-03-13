@@ -89,10 +89,11 @@ def md2ipynb(md_file):
 
             # 写入ipynb文件尾
             f2.write(tail)
+            print(f'已保存{ipynb_file}，请查看。')
 
 
 if __name__ == "__main__":
-    folder = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\data_analysis\可视化\Python数据可视化之matplotlib精进')
+    folder = pathlib.Path(r'C:\Users\Administrator\Desktop')
 
     for md_file in folder.glob('*.md'):
         md2ipynb(md_file)
