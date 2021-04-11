@@ -1,5 +1,5 @@
 '''
-转换剪贴板中html源码内容为opml大纲笔记内容
+转换剪贴板中html源码内容为markdown笔记内容
 '''
 import html2text
 import pyperclip

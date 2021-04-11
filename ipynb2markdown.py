@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG, filename='debug.log')
 def ipynb2md(ipynb_file):
     """转换ipynb文件为markdown文件"""
     md_file = ipynb_file.with_suffix('.md')
-    content = ''
+    content = f'# {ipynb_file.stem}\n'
     with open(ipynb_file, encoding='utf-8') as f1:
         with open(md_file, 'w', encoding='utf-8') as f2:
             cells = json.loads(f1.read())['cells']
@@ -44,4 +44,4 @@ if __name__ == "__main__":
 
     for count, ipynb_file in enumerate(folder.glob('*.ipynb'), 1):
         ipynb2md(ipynb_file)
-    print(f"已转换{count}个ipynb文件，请到'{folder}'目录下查看。")
+    print(f"已转换{count}个ipynb文件为markdown文件，请到'{folder}'目录下查看。")
