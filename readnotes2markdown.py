@@ -237,8 +237,8 @@ if __name__ == "__main__":
     # 先使用add_code_mark再使用split_code_line、remove_linenum
     # 最后再使用add_markdown_tag添加markdown标记
 
-    # fn_list = [remove_timemark, add_markdown_tag]   # 针对普通笔记清洗策略
-    fn_list = [remove_timemark, add_code_mark, split_code_line, add_code_mark, add_markdown_tag]   # 针对编程笔记清洗策略
+    fn_list = [remove_timemark, add_markdown_tag]   # 针对普通笔记清洗策略
+    # fn_list = [remove_timemark, add_code_mark, split_code_line, add_code_mark, add_markdown_tag]   # 针对编程笔记清洗策略
     # fn_list = [remove_timemark, add_code_mark, split_code_line, remove_linenum, add_markdown_tag]   # 针对编程笔记清洗策略(清除代码行号)
     for fn in fn_list:
         tmpnotes = create_tmpnotes(cleannotes)
