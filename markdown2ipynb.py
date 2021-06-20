@@ -4,14 +4,8 @@
 import pathlib
 
 
-def md2ipynb(md_file):
-    """转换markdown文件为ipynb文件"""
-    ipynb_file = md_file.with_suffix('.ipynb')
-    # 注意文件编码格式
-    with open(md_file, 'r', encoding='utf-8-sig') as f1:
-        with open(ipynb_file, 'w', encoding='utf-8') as f2:
-            # ipynb文件头、文件尾、markdown单元格头、代码单元格头、单元格尾
-            header = '''{
+# ipynb文件头、文件尾、markdown单元格头、代码单元格头、单元格尾
+header = '''{
  "nbformat": 4,
  "nbformat_minor": 2,
  "metadata": {
@@ -33,26 +27,33 @@ def md2ipynb(md_file):
  },
  "cells": [
 '''
-            tail = '''   ]
+tail = '''   ]
   }
  ]
 }'''
-            mdcell_header = '''  {
+mdcell_header = '''  {
    "cell_type": "markdown",
    "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
 '''
-            codecell_header = '''  {
+codecell_header = '''  {
    "cell_type": "code",
    "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
 '''
-            cell_tail = "\n   ]\n  },\n"
+cell_tail = "\n   ]\n  },\n"
 
+
+def md2ipynb(md_file):
+    """转换markdown文件为ipynb文件"""
+    ipynb_file = md_file.with_suffix('.ipynb')
+    # 注意文件编码格式
+    with open(md_file, 'r', encoding='utf-8-sig') as f1:
+        with open(ipynb_file, 'w', encoding='utf-8') as f2:
             f2.write(header)
 
             # 代码块标记计数初始化

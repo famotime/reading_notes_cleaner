@@ -22,7 +22,7 @@ def html2markdown(html):
     print('-'*50)
 
     # markdown = re.sub(r'\s*\*\*(.*?)\*\*\n', lambda x: '\n#### ' + x.group(1) + '\n' if len(x.group(1))<15 else x.group(0), markdown)     # 加粗短行内容设为4级标题
-    markdown = re.sub(r'\n\s*?\*\*(.*?)\*\*\n', lambda x: '\n#### ' + x.group(1) + '\n', markdown)     # 加粗短行内容设为4级标题
+    markdown = re.sub(r'\n\s*?\*\*(.*?)\*\*\s*?\n', lambda x: '\n#### ' + x.group(1) + '\n', markdown)     # 加粗短行内容设为4级标题
     markdown = re.sub(r'\n(#+)\s*?\*\*(.*?)\*\*\n', lambda x: x.group(1) + ' ' + x.group(2) + '\n', markdown)     # 去除标题行加粗标记**...**
     markdown = markdown.replace('>>>', '\n>>>')     # python代码内容增加换行
     print(markdown)
