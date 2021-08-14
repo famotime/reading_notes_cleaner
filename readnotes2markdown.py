@@ -82,7 +82,7 @@ def add_markdown_tag(cleannotes):
                         line = '### ' + line
                         count += 1
                     # 末尾无标点短句作为小标题加粗显示
-                    elif len(line) < 15 and not re.match(r'[。？！，、；：“”‘（）《》〈〉【】『』「」﹃﹄〔〕…—～﹏￥]', line[::-1]):
+                    elif len(line) < 15 and not line.startswith('#') and not re.match(r'[。？！，、；：“”‘（）《》〈〉【】『』「」﹃﹄〔〕…—～﹏￥]', line[::-1]):
                         line = "**" + line.strip() + "**\n"
                         count += 1
 
