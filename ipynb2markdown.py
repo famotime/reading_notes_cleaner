@@ -19,7 +19,10 @@ def ipynb2md(ipynb_file):
             cells = json.loads(f1.read())['cells']
             for cell in cells:
                 if cell["cell_type"] == "markdown":
-                    content += ''.join(cell["source"]) + '\n'
+                    if cell["source"][0].startswith("#"):
+                        content += ''.join(cell["source"]) + '\n'
+                    else:
+                        content += '#### ' + ''.join(cell["source"]) + '\n'
                 elif cell["cell_type"] == "code":
                     codes = re.sub(r'# *', '# ', ''.join(cell["source"]))   # 代码注释规范化
                     content += "\n```python\n" + codes + "\n```\n"
