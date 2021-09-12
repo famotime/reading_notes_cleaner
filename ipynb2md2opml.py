@@ -3,7 +3,7 @@ from ipynb2markdown import ipynb2md
 from markdown2opml import md_file2opml_file
 
 
-folder = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\GitHub\numpy-cn-1.17\docs\article')
+folder = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\data_visualization\plotnine-examples-master\plotnine_examples')
 
 for count, ipynb_file in enumerate(folder.glob('**/*.ipynb'), 1):
     print(f'正在处理文件：{ipynb_file}……')

@@ -5,8 +5,6 @@ import pathlib
 import json
 import re
 import logging
-
-
 logging.basicConfig(level=logging.DEBUG, filename='debug.log')
 
 
