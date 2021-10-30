@@ -13,6 +13,8 @@ if __name__ == "__main__":
         if html != pyperclip.paste():
             html = pyperclip.paste()
             markdown = h2mc.html2markdown(html)
+            # with open('test.md', 'w') as f:
+            #     f.write(markdown)
             opml = markdown2opml.md2opml(markdown)
             pyperclip.copy(opml)
             html = opml

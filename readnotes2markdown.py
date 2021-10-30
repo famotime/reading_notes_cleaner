@@ -72,7 +72,7 @@ def add_markdown_tag(cleannotes):
                         last_line = line
 
                     # 以相关关键词开头行，添加markdown标记(章节标题)
-                    if re.match(r'(第.{1,2}[章讲])|(前言\n)|(.{,5}序言?\s)|(?:第.讲 )|附录|\d\d\s\w{2,10}\n', line):
+                    if re.match(r'(第.{1,2}[章讲节])|(前言\n)|(.{,5}序言?\s)|(?:第.讲 )|附录|\d\d\s\w{2,10}\n', line):
                         line = '## ' + line
                         count += 1
                     elif re.match(r'(\d{1,2}[\.\-]\d{1,2}[^.-])|(\d{1,2}[\.\-]\s\w{1,10}\n)', line):    # 形如：1.1，1-1；1. ，1- ；
@@ -81,14 +81,18 @@ def add_markdown_tag(cleannotes):
                     elif re.match(r'\d{1,2}[\.\-]\d{1,2}[\.\-]\d{1,2}', line):  # 形如：1.1.1，1-1-1；
                         line = '#### ' + line
                         count += 1
+
                     # 末尾无标点短句作为小标题加粗显示
                     elif len(line) < 15 and not line.startswith('#') and not re.match(r'[。？！，、；：“”‘（）《》〈〉【】『』「」﹃﹄〔〕…—～﹏￥]', line[::-1]):
                         line = "**" + line.strip() + "**\n"
                         count += 1
-                    # 列表项增加换行，匹配“1）...12）...；a）...b）...”或“（2）...”或“1. ”模式
-                    # else:
-                    #     line = re.sub('(?P<number>（?[1-9a-f]{1,2}[）．]\D)', lambda x: '\n' + x.group('number'), line)
+                    # 列表项增加换行，匹配“1）...12）...；a）...b）...”或“（2）...” 或“1. ”模式
+                    else:
+                        line = re.sub('(?P<number>（?[^-]?[1-9a-f]{1}[）．]\D)', lambda x: '\n' + x.group('number'), line)
 
+                    # "●"字符前增加换行
+                    if '●' in line:
+                        line = re.sub(r'(.)●', lambda x: f'{x.group(1)}\n●', line)
                     # 文末标记
                     if line.startswith('当当云阅读笔记'):
                         line = '\n---\n' + line
