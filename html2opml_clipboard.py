@@ -9,7 +9,8 @@ import html2markdown_clipboard as h2mc
 
 if __name__ == "__main__":
     html = ''
-    while True:
+    count = 0
+    while count < 1:
         if html != pyperclip.paste():
             html = pyperclip.paste()
             markdown = h2mc.html2markdown(html)
@@ -18,4 +19,5 @@ if __name__ == "__main__":
             opml = markdown2opml.md2opml(markdown)
             pyperclip.copy(opml)
             html = opml
+            count += 1
         time.sleep(2)

@@ -7,11 +7,12 @@ import re
 
 
 def html2markdown(html):
-    # markdown = html2text.html2text(html)
     text_maker = html2text.HTML2Text()
     text_maker.ignore_images = True
+    text_maker.body_width = 0
     text_maker.single_line_break = True
     text_maker.mark_code = True
+    text_maker.skip_internal_links = True
     markdown = text_maker.handle(html)
     # print(repr(markdown))
     # print('-' * 50)
