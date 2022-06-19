@@ -1,4 +1,4 @@
-"""将指定目录下opml文件内容批量复制到workflowy"""
+"""将指定目录下opml文件内容批量复制到workflowy（自动键鼠操作）"""
 import pathlib
 import time
 import pyautogui

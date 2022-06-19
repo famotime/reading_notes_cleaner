@@ -113,7 +113,7 @@ def md_file2opml_file(md_file):
 
 
 if __name__ == "__main__":
-    folder = pathlib.Path(r"C:\QMDownload\Python Programming\Python_Work\GitHub\lua-master")
+    folder = pathlib.Path(r"C:\QMDownload\Python Programming\Python_Work\GitHub\copilot-docs-main\docs\visualstudiocode")
     md_files = list(folder.glob('**/*.Rmd')) + list(folder.glob('**/*.md'))
     for md_file in md_files:
         md_file2opml_file(md_file)

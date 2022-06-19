@@ -87,8 +87,8 @@ def add_markdown_tag(cleannotes):
                         line = "**" + line.strip() + "**\n"
                         count += 1
                     # 列表项增加换行，匹配“1）...12）...；a）...b）...”或“（2）...” 或“1. ”模式
-                    else:
-                        line = re.sub('(?P<number>（?[^-]?[1-9a-f]{1}[）．]\D)', lambda x: '\n' + x.group('number'), line)
+                    # else:
+                    #     line = re.sub('(?P<number>（?[^-]?[1-9a-f]{1}[）．]\D)', lambda x: '\n' + x.group('number'), line)
 
                     # "●"字符前增加换行
                     if '●' in line:
