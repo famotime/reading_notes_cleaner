@@ -1,3 +1,5 @@
+"""将markdown文件中的图片相对路径改为绝对路径"""
+
 def md_abs_img_path(md_file):
     """将markdown文件中的图片相对路径改为绝对路径"""
     with open(md_file, encoding='utf-8') as f:

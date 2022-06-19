@@ -1,3 +1,4 @@
+"""批量转换目录及子目录下的ipynb文件为markdown文件和opml文件"""
 import pathlib
 from ipynb2markdown import ipynb2md
 from markdown2opml import md_file2opml_file
