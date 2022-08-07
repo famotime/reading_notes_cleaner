@@ -10,7 +10,7 @@ import html2markdown_clipboard as h2mc
 if __name__ == "__main__":
     html = ''
     count = 0
-    while count < 10:
+    while count < 100:
         if html != pyperclip.paste():
             html = pyperclip.paste()
             markdown = h2mc.html2markdown(html)
