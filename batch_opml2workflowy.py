@@ -7,9 +7,9 @@ pyautogui.FAILSAFE = True
 # pyautogui.PAUSE = 1
 
 
-folder = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\GitHub\Beautiful-Visualization-with-python-master\第11章 数据可视化案例\11.5. 中国疫情新冠肺炎COVID-19动图')
+folder = pathlib.Path(r'D:\Python_Work\reading_notes_cleaner\test')
 
-opml_files = sorted(folder.glob('*.opml'), key=lambda x: x.stem)
+opml_files = sorted(folder.glob('**/*.opml'), key=lambda x: x.stem)
 
 time.sleep(5)
 for num, opml in enumerate(opml_files, 1):

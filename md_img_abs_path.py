@@ -24,5 +24,5 @@ if __name__ == "__main__":
     #     md_abs_img_path(md_file)
 
     # 处理单个md文件
-    md_file = pathlib.Path(r"C:\QMDownload\Python Programming\Python_Work\Web Spider\my_douban_books\my_douban_data\2022年6月读书小记.md")
+    md_file = pathlib.Path(r"C:\QMDownload\Backup\Wiz Knowledge\exported_md\My Drafts\我看不懂，但我大受震撼——AI绘画初体验.md")
     md_abs_img_path(md_file)
