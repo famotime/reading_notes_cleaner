@@ -22,7 +22,7 @@ def md2opml(md_content):
 
     for line in md_content_lines:
         # 替换markdown文档中的特殊字符
-        line = line.replace('&', '&amp;').replace('\n', '&#10;').replace('"', '&quot;').replace('<', '&amp;lt;').replace('>', '&amp;gt;')
+        line = line.replace('&', '&amp;').replace('\n', '&#10;').replace('"', '&quot;').replace('<', '&amp;lt;').replace('>', '&amp;gt;').replace('\x1b', '')
         # 判断是否为代码块内容（```符号未闭合），是则直接设置为备注，代码块内#开头的注释行不作为标题
         if line.startswith('```'):
             codesign_count += 1
@@ -118,3 +118,8 @@ if __name__ == "__main__":
     for md_file in md_files:
         md_file2opml_file(md_file)
     print(f"已转换{len(md_files)}个markdown文件为opml文件，请到'{folder}'目录下查看。")
+
+    # 拷贝到剪贴板的Markdown文档内容转为workflowy支持的opml文件内容（带层次结构）
+    # md_content = pyperclip.paste()
+    # opml_content = markdown2opml.md2opml(md_content)
+    # pyperclip.copy(opml_content)

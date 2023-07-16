@@ -45,7 +45,7 @@ while i > 0:
                 elif line.startswith('# 定义(粉红)假设(蓝色)分析(黄色)'):
                     line = ''
                 # 短内容作为小标题加粗显示
-                elif line and (not line.startswith('#')) and len(line) < 20 and not line.endswith(('。', '？', '！', '；', '。”', '，”', '…', '，', '.', '?', ';', '"', '：')):
+                elif line and (not line.startswith(('#', '——'))) and len(line) < 20 and not line.endswith(('。', '？', '！', '；', '。”', '，”', '…', '，', '.', '?', ';', '"', '：')):
                     line = "\n**" + line.strip() + "**"
                     count += 1
 

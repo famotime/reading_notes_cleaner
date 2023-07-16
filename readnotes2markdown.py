@@ -1,5 +1,5 @@
 '''
-当当云阅读App导出笔记整理成Markdown文档
+当当云阅读App导出笔记(含代码内容)整理成Markdown文档
 '''
 import re
 import os
