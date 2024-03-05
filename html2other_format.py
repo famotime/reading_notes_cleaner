@@ -70,6 +70,10 @@ def html2opml_clipboard():
 
 if __name__ == "__main__":
     # 转换剪贴板中html源码内容为markdown笔记内容
-    html = pyperclip.paste()
-    markdown = html2markdown(html)
-    pyperclip.copy(markdown)
+    # html = pyperclip.paste()
+    # markdown = html2markdown(html)
+    # pyperclip.copy(markdown)
+
+    # 转换剪贴板中html源码内容为workflowy笔记内容
+    opml = html2opml_clipboard()
+    pyperclip.copy(opml)

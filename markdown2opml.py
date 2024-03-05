@@ -4,6 +4,8 @@ Markdown文件应以标题行开头（# XX）
 所有标题行作为清单项，非标题行作为备注
 '''
 import pathlib
+import pyperclip
+import markdown2opml
 
 
 def md2opml(md_content):
@@ -113,13 +115,13 @@ def md_file2opml_file(md_file):
 
 
 if __name__ == "__main__":
-    folder = pathlib.Path(r"D:\Python_Work\reading_notes_cleaner\unrelease\docs")
-    md_files = list(folder.glob('**/*.Rmd')) + list(folder.glob('**/*.md'))
-    for md_file in md_files:
-        md_file2opml_file(md_file)
-    print(f"已转换{len(md_files)}个markdown文件为opml文件，请到'{folder}'目录下查看。")
+    # folder = pathlib.Path(r"D:\Python_Work\reading_notes_cleaner\unrelease\docs")
+    # md_files = list(folder.glob('**/*.Rmd')) + list(folder.glob('**/*.md'))
+    # for md_file in md_files:
+    #     md_file2opml_file(md_file)
+    # print(f"已转换{len(md_files)}个markdown文件为opml文件，请到'{folder}'目录下查看。")
 
     # 拷贝到剪贴板的Markdown文档内容转为workflowy支持的opml文件内容（带层次结构）
-    # md_content = pyperclip.paste()
-    # opml_content = markdown2opml.md2opml(md_content)
-    # pyperclip.copy(opml_content)
+    md_content = pyperclip.paste()
+    opml_content = markdown2opml.md2opml(md_content)
+    pyperclip.copy(opml_content)
