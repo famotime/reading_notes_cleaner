@@ -20,19 +20,25 @@ def md2opml(md_content):
     first_line = True
     levels = []
     notes = ''
-    codesign_count = 0
+    # codesign_count = 0
+    codesign = False
 
     for line in md_content_lines:
         # 替换markdown文档中的特殊字符
         line = line.replace('&', '&amp;').replace('\n', '&#10;').replace('"', '&quot;').replace('<', '&amp;lt;').replace('>', '&amp;gt;').replace('\x1b', '')
+
         # 判断是否为代码块内容（```符号未闭合），是则直接设置为备注，代码块内#开头的注释行不作为标题
+        # if line.startswith('```'):
+        #     codesign_count += 1
+        # if codesign_count % 2 != 0:
+        #     level = 0
+        #     notes += line
         if line.startswith('```'):
-            codesign_count += 1
-        if codesign_count % 2 != 0:
+            codesign = not codesign
+        if codesign:
             level = 0
             notes += line
-        # 非代码块内容，#开头行作为标题行处理，配置缩进空格
-        else:
+        else:    # 非代码块内容，#开头行作为标题行处理，配置缩进空格
             if line.startswith('# '):
                 level = 1
             elif line.startswith('## '):
@@ -43,9 +49,8 @@ def md2opml(md_content):
                 level = 4
             elif line.startswith('##### '):
                 level = 5
-            else:
+            else:   # 非标题行累积加入备注
                 level = 0
-                # 非标题行累积加入备注
                 notes += line
 
         # 首行初始化
@@ -66,7 +71,7 @@ def md2opml(md_content):
                 content = '  ' * last_level + f'<outline text="{last_line}" _note="{notes}"'
             else:
                 content = '  ' * last_level + f'<outline text="{last_line}"'
-            # 下级标题，则写入此前存储文字，开放outline标签
+            # 下级标题，则写入此前存储文本，开放outline标签
             if level > last_level:
                 opml_content += content + '>\n'
                 level = last_level + 1  # 修正标题层级的跳级
