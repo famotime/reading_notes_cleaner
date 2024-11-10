@@ -53,7 +53,7 @@ def ipynb2md(ipynb_file):
 
 
 if __name__ == "__main__":
-    folder = pathlib.Path(r'D:\Python_Work\GitHub\prompt-engineering-for-developers-main')
+    folder = pathlib.Path(r'D:\Python_Work\GitHub\courses-master\AnthropicAPIFundamentals')
 
     for count, ipynb_file in enumerate(folder.glob('**/*.ipynb'), 1):
         print(f'正在处理文件：{ipynb_file}……')

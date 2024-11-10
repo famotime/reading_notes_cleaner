@@ -65,16 +65,16 @@ def find_markdown_files(directory, md_suffix):
 
 
 if __name__ == "__main__":
-    path = pathlib.Path(r'D:\Python_Work\GitHub\comflowy-main')
+    path = pathlib.Path(r'D:\Python_Work\GitHub\llm-cookbook-main\docs\C4')
 
     md_suffix = ['.md', '.rmd', '.mdx']     # 文件名后缀列表
 
     # 汇总保存指定目录（含子目录）下所有markdown文件内容为total_日期.md文件，并转为opml文件
-    total_file_path = create_total_markdown(path, md_suffix)
-    md2ol.md_file2opml_file(total_file_path)
+    # total_file_path = create_total_markdown(path, md_suffix)
+    # md2ol.md_file2opml_file(total_file_path)
 
     # 将全部markdown文件转为opml文件
-    # md_files = find_markdown_files(path, md_suffix)
-    # for md_file in md_files:
-    #     md2ol.md_file2opml_file(md_file)
-    # print(f"已转换{len(md_files)}个markdown文件为opml文件，请到'{path}'目录下查看。")
+    md_files = find_markdown_files(path, md_suffix)
+    for md_file in md_files:
+        md2ol.md_file2opml_file(md_file)
+    print(f"已转换{len(md_files)}个markdown文件为opml文件，请到'{path}'目录下查看。")

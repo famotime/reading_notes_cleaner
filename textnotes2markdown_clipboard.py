@@ -26,8 +26,8 @@ while i > 0:
                 if line.strip():
                     last_line = line
 
-                # 去除笔记记录时间，替换为空行
-                line = re.sub(r'^\d\d\d\d-\d\d-\d\d.*', '', line)
+                # 标注以日期格式开头的行
+                line = re.sub(r'^\d\d\d\d-\d\d-\d\d', '日期'*20, line)
 
                 # 以相关关键词开头行，添加markdown标记(章节标题)
                 if re.match(r'(第 ?.{1,3} ?[章节篇讲回])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
@@ -36,7 +36,7 @@ while i > 0:
                 elif re.match(r'\d{1,2}[\.\-]\d{1,2}[\.\-]\d{1,2}', line):  # 形如：1.1.1，1-1-1；
                     line = '#### ' + line
                     count += 1
-                elif re.match(r'(\d{1,2}[\.\-]\d{1,2}[^\.\-])|(\d{1,2}[\.\-]\s\w{1,10}\n)', line):    # 形如：1.1，1-1；1. ，1- ；
+                elif re.match(r'(\d{1,2}[\.\-]\d{1,2}[^\.\-])|(\d{1,2}[\.\-\s]\s?[\u4e00-\u9fa5]{1,10})', line):    # 形如：1.1，1-1；1. ，1- ，1 XXX；
                     line = '### ' + line
                     count += 1
                 # 文末标记
@@ -50,6 +50,10 @@ while i > 0:
                     count += 1
 
                 if line.strip('* \n'):
+                    # 替换日期行为空行
+                    if line.startswith("日期"*20):
+                        line = "\n\n"
+
                     new_lines.append(line)
         print(f'添加markdown标记{count}次。')
 

@@ -1,4 +1,20 @@
-"""读书笔记处理辅助脚本"""
+"""Markdown读书笔记处理辅助脚本：
+- 剪贴板文本处理:
+    - 删除多余空行
+    - 删除时间标记
+    - 处理markdown标题层级
+    - 提取并处理图片链接
+- 文件处理:
+    - 删除非代码区域空行
+    - 复制markdown文件及其图片
+    - 转换图片相对路径为绝对路径
+    - 批量处理OPML文件到Workflowy
+    - 提取Python脚本文档字符串生成概览
+
+使用方法:
+大部分函数可以直接调用，部分函数(如remove_emptylines_clipboard)
+会持续监听剪贴板变化并自动处理。
+"""
 import pathlib
 import pyperclip
 import time
@@ -169,6 +185,36 @@ def extract_md_descriptions(folder_path):
     print(f'已生成脚本概览"{output}"。')
 
 
+def extract_headings_and_bold(text: str = None) -> str:
+    """从markdown文本中提取标题和粗体内容
+
+    Args:
+        text: 要处理的markdown文本，如果为None则从剪贴板读取
+
+    Returns:
+        str: 提取出的标题和粗体内容，以双换行符分隔
+    """
+    if text is None:
+        text = pyperclip.paste()
+
+    lines = text.split('\n')
+    contents = []
+
+    for line in lines:
+        if line.startswith('#'):
+            contents.append(line)
+        elif '**' in line:
+            bold_texts = re.findall(r"\*\*(.*?)\*\*", line)
+            contents.append(''.join(bold_texts))
+
+    return '\n\n'.join(contents)
+
+def extract_to_clipboard():
+    """从剪贴板读取markdown文本，提取标题和粗体内容后写回剪贴板"""
+    result = extract_headings_and_bold()
+    pyperclip.copy(result)
+
+
 if __name__ == "__main__":
     # 将文件夹内所有md文件中的图片相对路径改为绝对路径
     # md_folder = pathlib.Path(r'C:\QMDownload\Python Programming\Python_Work\Web Spider\my_douban_books\my_douban_data')
@@ -176,5 +222,9 @@ if __name__ == "__main__":
     #     md_with_abs_imgpath(md_file)
 
     # 将markdown文件中的图片相对路径改为绝对路径
-    md_file = pathlib.Path(r"C:\QMDownload\Backup\Wiz Knowledge\exported_md\My Drafts\我看不懂，但我大受震撼——AI绘画初体验.md")
-    md_with_abs_imgpath(md_file)
+    # md_file = pathlib.Path(r"C:\QMDownload\Backup\Wiz Knowledge\exported_md\My Drafts\我看不懂，但我大受震撼——AI绘画初体验.md")
+    # md_with_abs_imgpath(md_file)
+
+    # 提取剪贴板markdown文本中的标题和粗体内容
+    extract_to_clipboard()
+    
