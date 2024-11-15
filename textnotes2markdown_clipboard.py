@@ -30,7 +30,7 @@ while i > 0:
                 line = re.sub(r'^\d\d\d\d-\d\d-\d\d', '日期'*20, line)
 
                 # 以相关关键词开头行，添加markdown标记(章节标题)
-                if re.match(r'(第 ?.{1,3} ?[章节篇讲回])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
+                if re.match(r'(第 ?.{1,3} ?[章节篇讲回部])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
                     line = '## ' + line
                     count += 1
                 elif re.match(r'\d{1,2}[\.\-]\d{1,2}[\.\-]\d{1,2}', line):  # 形如：1.1.1，1-1-1；
@@ -52,7 +52,7 @@ while i > 0:
                 if line.strip('* \n'):
                     # 替换日期行为空行
                     if line.startswith("日期"*20):
-                        line = "\n\n"
+                        line = "\n"
 
                     new_lines.append(line)
         print(f'添加markdown标记{count}次。')
