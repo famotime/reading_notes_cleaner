@@ -226,5 +226,9 @@ if __name__ == "__main__":
     # md_with_abs_imgpath(md_file)
 
     # 提取剪贴板markdown文本中的标题和粗体内容
-    extract_to_clipboard()
-    
+    # extract_to_clipboard()
+
+    # 提取markdown文件标题行及粗体内容
+    text = pyperclip.paste()
+    head_lines = extract_headings_and_bold(text)
+    pyperclip.copy(head_lines)
