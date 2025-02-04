@@ -84,7 +84,6 @@ def markdown_to_excel(md_file_path, excel_file_path, merge_tables=True):
         print(f"已将{len(dfs)}个表格分别保存至: {excel_path}")
 
 if __name__ == '__main__':
-    # 使用示例
     markdown_file = Path(r"D:\GitHub\awesome-mcp-servers-main\MCP datasheet.md")
     excel_file = markdown_file.with_suffix(".xlsx")
 
