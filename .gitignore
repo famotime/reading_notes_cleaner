@@ -133,3 +133,7 @@ dmypy.json
 .pyre/
 draftnotes.txt
 fullnotes.txt
+
+# custom
+input/
+output/
