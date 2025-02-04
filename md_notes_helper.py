@@ -47,7 +47,7 @@ def remove_noncode_emptylines(file_path):
 
     code_mark = 0
     f = []
-    with open(path, 'r', encoding='utf-8') as f1:
+    with open(file_path, 'r', encoding='utf-8') as f1:
         for line in f1:
             if line.startswith('```'):
                 code_mark += 1
