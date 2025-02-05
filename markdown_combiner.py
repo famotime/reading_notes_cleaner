@@ -8,8 +8,13 @@ import re
 from docx import Document
 
 
-def combine_markdown_files_by_title(directory):
-    """将指定目录下的所有markdown/docx文件内容，按照标题重新组合，相同标题下的内容拼接在一起，合并为一个markdown文件"""
+def combine_markdown_files_by_title(directory, process_docx=True):
+    """将指定目录下的所有markdown/docx文件内容，按照标题重新组合，相同标题下的内容拼接在一起，合并为一个markdown文件
+
+    Args:
+        directory: 要处理的目录路径
+        process_docx: 是否处理docx文件，默认为True
+    """
     content_by_header = {}
 
     # Regex to match headers (# to ######)
@@ -40,48 +45,49 @@ def combine_markdown_files_by_title(directory):
             content_by_header[full_header].append(text.strip())
 
     # 处理docx文件
-    for file_path in dir_path.glob('*.docx'):
-        # 排除包含"_combined"的文件
-        if '_combined' in file_path.stem:
-            continue
-
-        doc = Document(file_path)
-        content = []
-        current_header = None
-        current_text = []
-
-        for para in doc.paragraphs:
-            text = para.text.strip()
-            if not text:
+    if process_docx:
+        for file_path in dir_path.glob('*.docx'):
+            # 排除包含"_combined"的文件
+            if '_combined' in file_path.stem:
                 continue
 
-            # 检查是否是标题
-            header_match = header_pattern.match(text)
-            if header_match:
-                # 保存之前的内容
-                if current_header and current_text:
-                    if current_header not in content_by_header:
-                        content_by_header[current_header] = []
-                    content_by_header[current_header].append('\n\n'.join(current_text))
+            doc = Document(file_path)
+            content = []
+            current_header = None
+            current_text = []
 
-                # 开始新的标题
-                current_header = text
-                current_text = []
-            else:
-                if current_header:
-                    current_text.append(text)
+            for para in doc.paragraphs:
+                text = para.text.strip()
+                if not text:
+                    continue
+
+                # 检查是否是标题
+                header_match = header_pattern.match(text)
+                if header_match:
+                    # 保存之前的内容
+                    if current_header and current_text:
+                        if current_header not in content_by_header:
+                            content_by_header[current_header] = []
+                        content_by_header[current_header].append('\n\n'.join(current_text))
+
+                    # 开始新的标题
+                    current_header = text
+                    current_text = []
                 else:
-                    # 没有标题的内容放在默认标题下
-                    default_header = "# 未分类内容"
-                    if default_header not in content_by_header:
-                        content_by_header[default_header] = []
-                    content_by_header[default_header].append(text)
+                    if current_header:
+                        current_text.append(text)
+                    else:
+                        # 没有标题的内容放在默认标题下
+                        default_header = "# 未分类内容"
+                        if default_header not in content_by_header:
+                            content_by_header[default_header] = []
+                        content_by_header[default_header].append(text)
 
-        # 保存最后一个标题的内容
-        if current_header and current_text:
-            if current_header not in content_by_header:
-                content_by_header[current_header] = []
-            content_by_header[current_header].append('\n\n'.join(current_text))
+            # 保存最后一个标题的内容
+            if current_header and current_text:
+                if current_header not in content_by_header:
+                    content_by_header[current_header] = []
+                content_by_header[current_header].append('\n\n'.join(current_text))
 
     combined_content = []
     for header, contents in content_by_header.items():
@@ -93,8 +99,13 @@ def combine_markdown_files_by_title(directory):
     output_path.write_text("\n".join(combined_content), encoding='utf-8')
 
 
-def combine_markdown_files(directory):
-    """将指定目录下以及各子目录的markdown和docx文件内容，分别合并为一个markdown文件，原文件名作为二级标题，目录名_combined作为新文件名"""
+def combine_markdown_files(directory, process_docx=True):
+    """将指定目录下以及各子目录的markdown和docx文件内容，分别合并为一个markdown文件，原文件名作为二级标题，目录名_combined作为新文件名
+
+    Args:
+        directory: 要处理的目录路径
+        process_docx: 是否处理docx文件，默认为True
+    """
     dir_path = Path(directory)
 
     def natural_sort_key(path):
@@ -111,7 +122,9 @@ def combine_markdown_files(directory):
 
         # 获取当前目录下所有markdown和docx文件，排除包含"_combined"的文件，并按自然顺序排序
         md_files = sorted([f for f in folder.glob('*.md') if '_combined' not in f.stem], key=natural_sort_key)
-        docx_files = sorted([f for f in folder.glob('*.docx') if '_combined' not in f.stem], key=natural_sort_key)
+        docx_files = []
+        if process_docx:
+            docx_files = sorted([f for f in folder.glob('*.docx') if '_combined' not in f.stem], key=natural_sort_key)
         if not (md_files or docx_files):
             continue
 
@@ -183,5 +196,5 @@ def combine_markdown_files(directory):
 
 if __name__ == "__main__":
     directory = r"D:\小汤汁茶馆知识星球哈"
-    # combine_markdown_files_by_title(directory)
-    combine_markdown_files(directory)
+    # combine_markdown_files_by_title(directory, process_docx=False)  # 只处理markdown文件
+    combine_markdown_files(directory, process_docx=True)  # 同时处理markdown和docx文件
