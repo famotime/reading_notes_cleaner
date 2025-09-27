@@ -130,3 +130,4 @@ if __name__ == "__main__":
     md_content = pyperclip.paste()
     opml_content = markdown2opml.md2opml(md_content)
     pyperclip.copy(opml_content)
+    print("已将剪贴板内容转换为opml文件内容，请到剪贴板查看。")

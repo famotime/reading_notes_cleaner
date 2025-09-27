@@ -97,7 +97,7 @@ def combine_markdown_files_by_title(directory, process_docx=True):
 
     output_path = dir_path / f"{dir_path.stem}_combined.md"
     output_path.write_text("\n".join(combined_content), encoding='utf-8')
-
+    print(f"已保存合并后的文件: {output_path}")
 
 def combine_markdown_files(directory, process_docx=True):
     """将指定目录下以及各子目录的markdown和docx文件内容，分别合并为一个markdown文件，原文件名作为二级标题，目录名_combined作为新文件名
@@ -111,22 +111,21 @@ def combine_markdown_files(directory, process_docx=True):
     def natural_sort_key(path):
         """自然排序的key函数，用于处理文件名中的数字"""
         import re
-        # 将文件名中的数字转换为整数进行比较
         convert = lambda text: int(text) if text.isdigit() else text.lower()
         return [convert(c) for c in re.split('([0-9]+)', path.stem)]
 
-    # 遍历目录及子目录
-    for folder in dir_path.glob('**/'):
-        if folder == dir_path:
-            continue
-
+    def process_folder(folder):
+        """处理指定文件夹中的文件"""
         # 获取当前目录下所有markdown和docx文件，排除包含"_combined"的文件，并按自然顺序排序
         md_files = sorted([f for f in folder.glob('*.md') if '_combined' not in f.stem], key=natural_sort_key)
+        print(f"{folder}目录下有{len(md_files)}个markdown文件……")
         docx_files = []
         if process_docx:
             docx_files = sorted([f for f in folder.glob('*.docx') if '_combined' not in f.stem], key=natural_sort_key)
+            print(f"{folder}目录下有{len(docx_files)}个docx文件……")
         if not (md_files or docx_files):
-            continue
+            print(f"{folder}目录下没有markdown或docx文件: {folder}")
+            return
 
         # 创建images子目录
         images_dir = folder / 'images'
@@ -192,9 +191,22 @@ def combine_markdown_files(directory, process_docx=True):
         # 保存合并后的文件
         output_path = folder / f"{folder.name}_combined.md"
         output_path.write_text('\n'.join(combined_content), encoding='utf-8')
+        print(f"已保存合并后的文件: {output_path}")
+
+    # 首先处理根目录
+    process_folder(dir_path)
+
+    # 然后处理所有子目录
+    for folder in dir_path.glob('**/'):
+        if folder == dir_path:
+            continue
+        process_folder(folder)
 
 
 if __name__ == "__main__":
-    directory = r"D:\小汤汁茶馆知识星球哈"
-    # combine_markdown_files_by_title(directory, process_docx=False)  # 只处理markdown文件
+    directory = r"D:\小汤汁茶馆知识星球\小汤质框架梳理\《写作学》马正平"
+    # 将目录下的所有markdown/docx文件内容，按照标题重新组合，相同标题下的内容拼接在一起，合并为一个markdown文件
+    # combine_markdown_files_by_title(directory, process_docx=False)
+
+    # 将指定目录下以及各子目录的markdown和docx文件内容，分别合并为一个markdown文件
     combine_markdown_files(directory, process_docx=True)  # 同时处理markdown和docx文件

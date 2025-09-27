@@ -83,7 +83,7 @@ def add_markdown_tag(cleannotes):
                         count += 1
 
                     # 末尾无标点短句作为小标题加粗显示
-                    elif len(line) < 15 and not line.startswith('#') and not re.match(r'[。？！，、；：“”‘（）《》〈〉【】『』「」﹃﹄〔〕…—～﹏￥]', line[::-1]):
+                    elif len(line) < 15 and not line.startswith('#') and not line.startswith('```') and not re.match(r'[。？！，、；：“”‘（）《》〈〉【】『』「」﹃﹄〔〕…—～﹏￥]', line[::-1]):
                         line = "**" + line.strip() + "**\n"
                         count += 1
                     # 列表项增加换行，匹配“1）...12）...；a）...b）...”或“（2）...” 或“1. ”模式

@@ -17,7 +17,7 @@ def process_line(line: str, last_line: str) -> tuple[str, str]:
     line = re.sub(r'^\d\d\d\d-\d\d-\d\d', '日期'*20, line)
 
     # 处理各种标题格式
-    if re.match(r'(第 ?.{1,3} ?[章节篇讲回部])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
+    if re.match(r'(第 ?.{1,5} ?[章节篇讲回部])|(前言)|(引言)|(.{,5}序言?\s)|(?:第.讲 )|附录', line):
         return '## ' + line, last_line
     elif re.match(r'\d{1,2}[\.\-]\d{1,2}[\.\-]\d{1,2}', line):
         return '#### ' + line, last_line
