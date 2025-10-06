@@ -8,6 +8,14 @@ import tempfile
 import os
 import sys
 
+# 剪贴板支持
+try:
+    import pyperclip
+    PYPERCLIP_AVAILABLE = True
+except ImportError:
+    PYPERCLIP_AVAILABLE = False
+    print("警告: pyperclip 未安装，剪贴板处理功能受限")
+
 # 导入 .doc 文件处理相关库
 try:
     import docx2txt
@@ -109,11 +117,15 @@ def clean_markdown_text(text):
     """
     # 移除方括号引用 [1], [2-4] 等
     text = re.sub(r'\[\d+(?:-\d+)?\]', '', text)
+    # 移除 cite 风格的引用标记，如 [cite: xxx]、[cite_start]
+    text = re.sub(r'\[cite(?:_[a-z]+)?(?::[^\]]*)?\]', '', text, flags=re.IGNORECASE)
     # 移除脚注数字（如 1. １。2、3, 4．等，含前后空格）
     # 注意：这个正则表达式可能会移除段落开头的合法编号，如果需要保留，需要更精确的匹配
     text = re.sub(r'\s*[\d０-９]+[\.。．、,，]?\s*', '', text) # 这个正则比较宽泛
     # 去除多余空格
     text = re.sub(r'[ \t]+', ' ', text)
+    # 移除标点前多余空格
+    text = re.sub(r'\s+([,.;:，。；：！？!?])', r'\1', text)
     return text.strip()
 
 
@@ -134,10 +146,14 @@ def remove_footnotes_citations(doc):
             if not is_heading and not is_list:
                 # 移除方括号引用，如[1], [2-4]等
                 text = re.sub(r'\[\d+(?:-\d+)?\]', '', text)
+                # 移除 cite 风格的引用标记，如 [cite: xxx]、[cite_start]
+                text = re.sub(r'\[cite(?:_[a-z]+)?(?::[^\]]*)?\]', '', text, flags=re.IGNORECASE)
                 # 移除数字序号（包括中英文数字和标点），如"1. "、"１。"、"2、"等，要求后面是空格或结尾
                 text = re.sub(r'(?<![\d０-９\.])[\d０-９]+[\.。、,，]?(?=\s|$)', '', text)
                 # 将多个连续的空格或制表符替换为单个空格
                 text = re.sub(r'[ \t]+', ' ', text)
+            # 移除标点前多余空格
+            text = re.sub(r'\s+([,.;:，。；：！？!?])', r'\1', text)
             run.text = text.strip() # 注意：这里的strip()可能会导致只包含空格的run变为空
     # 表格同理
     for table in doc.tables:
@@ -524,6 +540,58 @@ def convert_markdown_to_cleaned(md_path, output_dir=None, overwrite=False):
     return output_file
 
 
+
+def process_clipboard_markdown(output_path=None, copy_back=True, overwrite=False):
+    """
+    从剪贴板读取Markdown文本并进行清理
+
+    Args:
+        output_path: 可选输出文件路径
+        copy_back: 是否将清理结果写回剪贴板
+        overwrite: 写入文件时是否覆盖已存在的文件
+
+    Returns:
+        cleaned_text: 清理后的Markdown文本
+    """
+    if not PYPERCLIP_AVAILABLE:
+        print("错误: pyperclip 未安装，无法处理剪贴板内容。")
+        return None
+
+    try:
+        clipboard_text = pyperclip.paste()
+    except pyperclip.PyperclipException as e:
+        print(f"读取剪贴板失败: {e}")
+        return None
+
+    if not clipboard_text:
+        print("剪贴板为空或不包含文本，跳过处理。")
+        return None
+
+    cleaned_text = clean_markdown_text(clipboard_text)
+
+    if output_path:
+        output_path = Path(output_path)
+        if output_path.exists() and not overwrite:
+            print(f"跳过写入 (不覆盖): {output_path}")
+        else:
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(cleaned_text, encoding='utf-8')
+            print(f"已将清理后的文本写入: {output_path}")
+
+    if copy_back:
+        try:
+            pyperclip.copy(cleaned_text)
+            print("已将清理结果写回剪贴板。")
+        except pyperclip.PyperclipException as e:
+            print(f"写回剪贴板失败: {e}")
+
+    print("清理后的Markdown内容:\n")
+    print(cleaned_text)
+
+    return cleaned_text
+
+
+
 def process_directory(input_dir, output_dir=None, overwrite=False, file_format=FileFormat.WORD):
     """
     处理目录下所有文件，包括子目录
@@ -590,7 +658,8 @@ def process_directory(input_dir, output_dir=None, overwrite=False, file_format=F
 
 if __name__ == "__main__":
     # --- 配置区 ---
-    INPUT_DIR_PATH = Path("input")
+    # INPUT_DIR_PATH = Path("input")  
+    INPUT_DIR_PATH = None  # 设置为 None 可跳过目录批量处理
 
     # 可选：指定统一的输出目录。如果为 None，则输出到各原文件所在目录。
     # OUTPUT_DIR_PATH = Path("./DeepResearch Reports/Markdown_Output")
@@ -600,24 +669,42 @@ if __name__ == "__main__":
 
     # 选择处理的文件类型：FileFormat.WORD 或 FileFormat.MARKDOWN
     PROCESSING_FORMAT = FileFormat.WORD
+
+    # 剪贴板处理开关及设置
+    PROCESS_CLIPBOARD_MARKDOWN = True
+    CLIPBOARD_OUTPUT_PATH = None  # 例如 Path("clipboard_cleaned.md")
+    CLIPBOARD_OVERWRITE = False
+    CLIPBOARD_COPY_BACK = True
     # --- 配置区结束 ---
 
-    if not INPUT_DIR_PATH.exists() or not INPUT_DIR_PATH.is_dir():
-        print(f"错误：输入目录 '{INPUT_DIR_PATH}' 不存在或不是一个目录。")
-    else:
-        print(f"开始处理目录: {INPUT_DIR_PATH}")
-        print(f"处理文件类型: {PROCESSING_FORMAT.value}")
-        if OUTPUT_DIR_PATH:
-            print(f"输出到指定目录: {OUTPUT_DIR_PATH}")
-        else:
-            print("输出到原文件各自所在目录 (或其子目录，如_cleaned)。")
-        print(f"是否覆盖已存在文件: {OVERWRITE_EXISTING}")
-
-        process_directory(
-            INPUT_DIR_PATH,
-            output_dir=OUTPUT_DIR_PATH,
-            overwrite=OVERWRITE_EXISTING,
-            file_format=PROCESSING_FORMAT
+    if PROCESS_CLIPBOARD_MARKDOWN:
+        print("开始处理剪贴板中的Markdown文本。")
+        process_clipboard_markdown(
+            output_path=CLIPBOARD_OUTPUT_PATH,
+            copy_back=CLIPBOARD_COPY_BACK,
+            overwrite=CLIPBOARD_OVERWRITE
         )
-        print("处理完成。")
+        print("剪贴板处理完成。")
+
+    if INPUT_DIR_PATH is None:
+        print("未配置输入目录，跳过批量文件处理。")
+    else:
+        if not INPUT_DIR_PATH.exists() or not INPUT_DIR_PATH.is_dir():
+            print(f"错误：输入目录 '{INPUT_DIR_PATH}' 不存在或不是一个目录。")
+        else:
+            print(f"开始处理目录: {INPUT_DIR_PATH}")
+            print(f"处理文件类型: {PROCESSING_FORMAT.value}")
+            if OUTPUT_DIR_PATH:
+                print(f"输出到指定目录: {OUTPUT_DIR_PATH}")
+            else:
+                print("输出到原文件各自所在目录 (或其子目录，如_cleaned)。")
+            print(f"是否覆盖已存在文件: {OVERWRITE_EXISTING}")
+
+            process_directory(
+                INPUT_DIR_PATH,
+                output_dir=OUTPUT_DIR_PATH,
+                overwrite=OVERWRITE_EXISTING,
+                file_format=PROCESSING_FORMAT
+            )
+            print("处理完成。")
 
