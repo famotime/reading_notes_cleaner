@@ -105,6 +105,47 @@ def read_doc_file_as_text(doc_path):
         return None
 
 
+CITE_TAG_PATTERN = re.compile(r'\[cite(?:_[a-z]+)?(?::[^\]]*)?\]', re.IGNORECASE)
+INLINE_NUMBER_PATTERN = re.compile(r'[\d０-９]{1,3}[\.。．、,，]?')
+MEASUREMENT_FOLLOWERS = {'%', '％', '‰', '℃', '°'}
+
+
+def remove_cite_tags(text):
+    """移除 cite 风格的引用标记。"""
+    return CITE_TAG_PATTERN.sub('', text)
+
+
+
+def remove_inline_number_markers(text):
+    """移除疑似脚注编号，同时保留行首有效的列表编号。"""
+    original = text
+
+    def _replace(match):
+        matched = match.group()
+        start, end = match.span()
+
+        # 判断是否位于行首（忽略行首缩进），若是则保留，常见于列表编号
+        idx = start - 1
+        while idx >= 0 and original[idx].isspace() and original[idx] not in '\r\n':
+            idx -= 1
+        if idx < 0 or original[idx] in '\r\n':
+            return matched
+
+        # 跳过空白以检查编号后的字符，若紧跟字母/数字或常见计量符号，则认为是正文数字，予以保留
+        next_idx = end
+        length = len(original)
+        while next_idx < length and original[next_idx].isspace():
+            next_idx += 1
+        if next_idx < length:
+            next_char = original[next_idx]
+            if next_char.isalnum() or next_char in MEASUREMENT_FOLLOWERS:
+                return matched
+
+        return ''
+
+    return INLINE_NUMBER_PATTERN.sub(_replace, text)
+
+
 def clean_markdown_text(text):
     """
     清理Markdown文本中的脚注和引用
@@ -117,11 +158,10 @@ def clean_markdown_text(text):
     """
     # 移除方括号引用 [1], [2-4] 等
     text = re.sub(r'\[\d+(?:-\d+)?\]', '', text)
-    # 移除 cite 风格的引用标记，如 [cite: xxx]、[cite_start]
-    text = re.sub(r'\[cite(?:_[a-z]+)?(?::[^\]]*)?\]', '', text, flags=re.IGNORECASE)
-    # 移除脚注数字（如 1. １。2、3, 4．等，含前后空格）
-    # 注意：这个正则表达式可能会移除段落开头的合法编号，如果需要保留，需要更精确的匹配
-    text = re.sub(r'\s*[\d０-９]+[\.。．、,，]?\s*', '', text) # 这个正则比较宽泛
+    # 移除 cite 风格的引用标记
+    text = remove_cite_tags(text)
+    # 移除疑似脚注编号，同时保留行首的合法编号
+    text = remove_inline_number_markers(text)
     # 去除多余空格
     text = re.sub(r'[ \t]+', ' ', text)
     # 移除标点前多余空格
@@ -147,9 +187,9 @@ def remove_footnotes_citations(doc):
                 # 移除方括号引用，如[1], [2-4]等
                 text = re.sub(r'\[\d+(?:-\d+)?\]', '', text)
                 # 移除 cite 风格的引用标记，如 [cite: xxx]、[cite_start]
-                text = re.sub(r'\[cite(?:_[a-z]+)?(?::[^\]]*)?\]', '', text, flags=re.IGNORECASE)
-                # 移除数字序号（包括中英文数字和标点），如"1. "、"１。"、"2、"等，要求后面是空格或结尾
-                text = re.sub(r'(?<![\d０-９\.])[\d０-９]+[\.。、,，]?(?=\s|$)', '', text)
+                text = remove_cite_tags(text)
+                # 移除疑似脚注编号，但保留行首列表编号
+                text = remove_inline_number_markers(text)
                 # 将多个连续的空格或制表符替换为单个空格
                 text = re.sub(r'[ \t]+', ' ', text)
             # 移除标点前多余空格
@@ -172,8 +212,10 @@ def remove_footnotes_citations(doc):
                         text = run.text
                         if not is_heading_cell_para and not is_list_cell_para:
                             text = re.sub(r'\[\d+(?:-\d+)?\]', '', text)
-                            text = re.sub(r'(?<![\d０-９\.])[\d０-９]+[\.。、,，]?(?=\s|$)', '', text)
+                            text = remove_cite_tags(text)
+                            text = remove_inline_number_markers(text)
                         text = re.sub(r'[ \t]+', ' ', text)
+                        text = re.sub(r'\s+([,.;:，。；：！？!?])', r'\1', text)
                         run.text = text.strip() # 同样，strip()可能清空run
     return doc
 
